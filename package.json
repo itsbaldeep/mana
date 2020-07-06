@@ -1,0 +1,22 @@
+{
+  "name": "mana",
+  "version": "1.0.0",
+  "description": "A minimal bot with game commands around a simple currency system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsbaldeep/mana.git"
+  },
+  "author": "Baldeep Singh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/itsbaldeep/mana/issues"
+  },
+  "homepage": "https://github.com/itsbaldeep/mana#readme",
+  "dependencies": {
+    "discord.js": "^12.2.0"
+  }
+}
