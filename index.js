@@ -1,6 +1,7 @@
 // Libraries
 const Discord = require("discord.js");
-const fs = require('fs');
+const fs = require("fs");
+const mongoose = require("mongoose");
 
 // Configuration files
 const { prefix } = require("./config.json");
@@ -14,6 +15,12 @@ for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
     client.commands.set(file.slice(0, -3), command);
 }
+
+// Connecting to Database
+mongoose.connect(`mongodb+srv://mana:${process.env.MONGODB_PW}@mana.fych6.mongodb.net/Mana?retryWrites=true&w=majority`, {
+	useUnifiedTopology: true,
+	useNewUrlParser: true
+});
 
 // Ready function
 client.once("ready", () => {
