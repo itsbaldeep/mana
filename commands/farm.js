@@ -5,6 +5,14 @@ const { color } = require("../config.json");
 module.exports = {
     execute(message) {
         User.findOne({ id: message.author.id }).exec().then(user => {
+            if (!user) {
+                message.channel.send(new Discord.MessageEmbed()
+                    .setColor("#ff0000")
+                    .setTitle("Unable to farm!")
+                    .setDescription("You need to run ~profile first!")
+                );
+            return;
+            }
             const n = Math.ceil(Math.random() * 4);
             const m = Math.floor(10 + user.level * 1.1);
         
