@@ -1,3 +1,4 @@
+const Discord = require("discord.js");
 const User = require("../models/User");
 const { color } = require("../config.json");
 
