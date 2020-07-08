@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Discord = require("discord.js");
+const { color } = require("../config.json");
 
 module.exports = {
     execute(message) {
@@ -18,7 +19,7 @@ module.exports = {
             } else user = res;
             const exp = user.experience[0] + 100 * user.level;
             message.channel.send(new Discord.MessageEmbed()
-                .setColor("#e65589")
+                .setColor(color)
                 .setThumbnail(message.author.displayAvatarURL())
                 .setTitle(message.author.username + "#" + message.author.discriminator)
                 .addFields(
