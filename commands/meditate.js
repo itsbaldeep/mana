@@ -14,15 +14,16 @@ module.exports = {
                 return;
             }
             const changes = { mana: user.mana };
+            const initial = user.mana[0];
             const min = user.level;
             const max = user.level * 4 + 40;
-            const replenished = Math.floor(Math.random() * (max - min + 1)) + min;
-            changes.mana[0] = Math.max(changes.mana[0] + replenished, changes.mana[1]);
+            const replenished = Math.floor(Math.random() * (max + min -1)) + min;
+            changes.mana[0] = Math.min(initial + replenished, changes.mana[1]);
             User.updateOne({ id: message.author.id }, { $set: changes }).exec().then(res => {
                 message.channel.send(new Discord.MessageEmbed()
                     .setColor(color)
                     .setTitle("Meditation successful!")
-                    .setDescription(`Replenished ${replenished} mana points!`)
+                    .setDescription(`Replenished ${changes.mana[0] - initial} mana points!`)
                     .addField(":droplet: Current Mana", `${changes.mana[0]}/${changes.mana[1]}`)
                 );
             });
