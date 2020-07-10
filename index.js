@@ -2,6 +2,7 @@
 const Discord = require("discord.js");
 const fs = require("fs");
 const mongoose = require("mongoose");
+const User = require("./models/User");
 
 // Configuration files
 const { prefix } = require("./config.json");
@@ -13,7 +14,8 @@ const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith("
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
-    client.commands.set(file.slice(0, -3), command);
+	const name = file.slice(0, -3);
+	client.commands.set(name, command);
 }
 
 // Connecting to Database
@@ -28,17 +30,29 @@ client.once("ready", () => {
 });
 
 // Message function
-client.on("message", message => {
+client.on("message", async message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice(prefix.length).split(/ +/);
 	const command = args.shift().toLowerCase();
 	if (!client.commands.has(command)) return;
 
     try {
+		const user = await User.findOne({ id: message.author.id }).exec();
+		// New User
+		if (!user) {
+			const newUser = new User({
+				id: message.author.id,
+				level: 1,
+				experience: [0, 0],
+				mana: [100, 100],
+				items: []
+			});
+			await newUser.save();
+		}
 		client.commands.get(command).execute(message, args);
 	} catch (error) {
 		console.error(error);
-		message.reply('there was an error trying to execute that command!');
+		message.reply("There was an error trying to execute that command!");
 	}
 })
 
