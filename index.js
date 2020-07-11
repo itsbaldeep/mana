@@ -7,14 +7,17 @@ const User = require("./models/User");
 // Configuration files
 const { prefix } = require("./config.json");
 
-// Initializing client and commands
+// Initializing client and commands and cooldowns
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 
+const cds = new Map();
+
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	const name = file.slice(0, -3);
+	cds.set(name, new Map());
 	client.commands.set(name, command);
 }
 
@@ -35,6 +38,28 @@ client.on("message", async message => {
     const args = message.content.slice(prefix.length).split(/ +/);
 	const command = args.shift().toLowerCase();
 	if (!client.commands.has(command)) return;
+
+	// Handling cooldowns
+	let cd = client.commands.get(command).cooldown;
+	if (cds.get(command).has(message.author.id)) {
+		let init = cds.get(command).get(message.author.id);
+		let curr = new Date();
+		let diff = Math.round((curr-init)/1000);
+		message.channel.send(new Discord.MessageEmbed()
+            .setColor("#ff0000")
+            .setTitle("You are on cooldown!")
+			.addFields(
+				{ name: `Cooldown on ${command} command`, value: `${cd} seconds` },
+				{ name: "Time left", value: `${cd-diff} seconds` }
+			)
+            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
+            .setTimestamp()
+        );
+		return;
+	} else {
+		cds.get(command).set(message.author.id, new Date());
+		setTimeout(() => cds.get(command).delete(message.author.id), cd * 1000);
+	}
 
     try {
 		const user = await User.findOne({ id: message.author.id }).exec();

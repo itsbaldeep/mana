@@ -3,6 +3,8 @@ const Potion = require("../models/Potion");
 const Discord = require("discord.js");
 const { color } = require("../config.json");
 
+module.exports.cooldown = 5;
+
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id }).exec();
     const embed = new Discord.MessageEmbed()

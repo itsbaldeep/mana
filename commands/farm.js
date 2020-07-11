@@ -3,6 +3,8 @@ const User = require("../models/User");
 const Potion = require("../models/Potion");
 const { color } = require("../config.json");
 
+module.exports.cooldown = 30;
+
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id }).exec();
     

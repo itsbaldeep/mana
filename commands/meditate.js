@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const User = require("../models/User");
 const { color } = require("../config.json");
 
+module.exports.cooldown = 60;
+
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id }).exec();
     // Checking for max mana
