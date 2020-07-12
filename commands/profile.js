@@ -36,4 +36,5 @@ module.exports.execute = async message => {
     }
     embed.addField(":briefcase: Inventory", txt ? txt : "Empty");
     message.channel.send(embed);
+    return 1;
 }

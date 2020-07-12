@@ -50,7 +50,6 @@ module.exports.execute = async (message, args) => {
             const initial = changes.mana[0];
             const newMana = initial + Math.floor(changes.mana[1] * pot.power / 100);
             changes.mana[0] = Math.min(newMana, changes.mana[1]);
-            console.log(changes.items);
             await User.updateOne({ id: message.author.id }, { $set: changes }).exec();
             message.channel.send(new Discord.MessageEmbed()
                 .setColor(color)
@@ -74,4 +73,5 @@ module.exports.execute = async (message, args) => {
         );
         return;
     }
+    return 1;
 }

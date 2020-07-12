@@ -89,5 +89,6 @@ module.exports.execute = async message => {
         );
     }
     if (drop) embed.addField(":bento: Items found", pot.name + " x1");
-    message.channel.send(embed);    
+    message.channel.send(embed);
+    return 1;
 }

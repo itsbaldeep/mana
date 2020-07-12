@@ -39,10 +39,12 @@ client.on("message", async message => {
 	const command = args.shift().toLowerCase();
 	if (!client.commands.has(command)) return;
 
+	const id = message.author.id;
+
 	// Handling cooldowns
 	let cd = client.commands.get(command).cooldown;
-	if (cds.get(command).has(message.author.id)) {
-		let init = cds.get(command).get(message.author.id);
+	if (cds.get(command).has(id)) {
+		let init = cds.get(command).get(id);
 		let curr = new Date();
 		let diff = Math.round((curr-init)/1000);
 		message.channel.send(new Discord.MessageEmbed()
@@ -57,16 +59,16 @@ client.on("message", async message => {
         );
 		return;
 	} else {
-		cds.get(command).set(message.author.id, new Date());
-		setTimeout(() => cds.get(command).delete(message.author.id), cd * 1000);
+		cds.get(command).set(id, new Date());
+		setTimeout(() => cds.get(command).delete(id), cd * 1000);
 	}
 
     try {
-		const user = await User.findOne({ id: message.author.id }).exec();
+		const user = await User.findOne({ id: id }).exec();
 		// New User
 		if (!user) {
 			const newUser = new User({
-				id: message.author.id,
+				id: id,
 				level: 1,
 				experience: [0, 0],
 				mana: [100, 100],
@@ -74,7 +76,8 @@ client.on("message", async message => {
 			});
 			await newUser.save();
 		}
-		client.commands.get(command).execute(message, args);
+		const code = await client.commands.get(command).execute(message, args);
+		if (!code && cds.get(command).has(id)) cds.get(command).delete(id);
 	} catch (error) {
 		console.error(error);
 		message.reply("There was an error trying to execute that command!");

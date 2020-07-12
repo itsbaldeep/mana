@@ -34,4 +34,5 @@ module.exports.execute = async message => {
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
     );
+    return 1;
 }
