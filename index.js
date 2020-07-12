@@ -71,7 +71,7 @@ client.on("message", async message => {
 				id: id,
 				level: 1,
 				experience: [0, 0],
-				mana: [100, 100],
+				mana: [70, 70],
 				items: []
 			});
 			await newUser.save();

@@ -3,6 +3,8 @@ const Potion = require("../models/Potion");
 const Discord = require("discord.js");
 const { color } = require("../config.json");
 
+const { calculateExp } = require("../formulas");
+
 module.exports.cooldown = 3;
 
 module.exports.execute = async message => {
@@ -16,7 +18,7 @@ module.exports.execute = async message => {
         .setTimestamp()
         .addFields(
             { name: ":crossed_swords: Level", value: user.level},
-            { name: ":book: Experience", value: user.experience[1] + ` (${user.experience[0] + 100 * user.level} for next level)`},
+            { name: ":book: Experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`},
             { name: ":droplet: Mana", value: user.mana[0] + "/" + user.mana[1]},
     );
 

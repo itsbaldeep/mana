@@ -10,8 +10,7 @@ module.exports.execute = async message => {
     if (user.mana[0] == user.mana[1]) {
         message.channel.send(new Discord.MessageEmbed()
             .setColor(color)
-            .setTitle("Maximum mana!")
-            .setDescription(`You already have maximum mana! (${user.mana[0]}/${user.mana[1]})`)
+            .addField(":droplet: Maximum mana!", `You already have maximum mana! (${user.mana[0]}/${user.mana[1]})`)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
         );
@@ -28,9 +27,10 @@ module.exports.execute = async message => {
     await User.updateOne({ id: message.author.id }, { $set: changes }).exec();
     message.channel.send(new Discord.MessageEmbed()
         .setColor(color)
-        .setTitle("Meditation successful!")
-        .setDescription(`Replenished ${changes.mana[0] - initial} mana points!`)
-        .addField(":droplet: Current Mana", `${changes.mana[0]}/${changes.mana[1]}`)
+        .addFields(
+            { name: ":stars: Meditation successful!", value: `Replenished ${changes.mana[0] - initial} mana points!`},
+            { name: ":droplet: Current Mana", value: `${changes.mana[0]}/${changes.mana[1]}`}
+        )
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
     );
