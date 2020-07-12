@@ -6,7 +6,7 @@ const { color } = require("../config.json");
 const { calculateMana, calculateExp, calculateMobMana, calculateMobExp } = require("../formulas");
 const max = 6;
 
-module.exports.cooldown = 0;
+module.exports.cooldown = 15;
 
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id }).exec();
