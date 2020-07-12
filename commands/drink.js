@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const { color } = require("../config.json");
 const User = require("../models/User");
 
-module.exports.cooldown = 60;
+module.exports.cooldown = 30;
 
 module.exports.execute = async (message, args) => {
     // Validating query

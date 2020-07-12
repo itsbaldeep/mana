@@ -3,14 +3,16 @@ const Potion = require("../models/Potion");
 const Discord = require("discord.js");
 const { color } = require("../config.json");
 
-module.exports.cooldown = 5;
+module.exports.cooldown = 3;
 
 module.exports.execute = async message => {
-    const user = await User.findOne({ id: message.author.id }).exec();
+    const mention = message.mentions.users.first();
+    const author = mention || message.author;
+    const user = await User.findOne({ id: author.id }).exec();
     const embed = new Discord.MessageEmbed()
         .setColor(color)
-        .setThumbnail(message.author.displayAvatarURL())
-        .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
+        .setThumbnail(author.displayAvatarURL())
+        .setAuthor(author.username + "#" + author.discriminator, author.displayAvatarURL())
         .setTimestamp()
         .addFields(
             { name: ":crossed_swords: Level", value: user.level},
