@@ -8,7 +8,7 @@ const pickItem = require("../functions/pickitem");
 const { calculateMana, calculateExp, calculateMobMana, calculateMobExp } = require("../formulas");
 const max = 6;
 
-module.exports.cooldown = 1;
+module.exports.cooldown = 15;
 
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id }).exec();
