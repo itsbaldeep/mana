@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Potion = require("../models/Potion");
+const Item = require("../models/Item");
 const Discord = require("discord.js");
 const { color } = require("../config.json");
 
@@ -23,22 +24,38 @@ module.exports.execute = async message => {
     );
 
     // Check for inventory
-    let txt = "";
-    if (user.items.length > 0) {
+    let pots = "";
+    if (user.potions.length > 0) {
         const reqs = [];
-        user.items.forEach(item => {
-            const req = Potion.findOne({ _id: item[0] });
+        user.potions.forEach(potion => {
+            const req = Potion.findOne({ _id: potion[0] });
             reqs.push(req);
         });
         const inv = await Promise.all(reqs);
         inv.forEach((pot, i) => {
-            const quantity = user.items[i][1];
+            const quantity = user.potions[i][1];
             if (quantity > 0) {
-                txt += `${pot.name} x${quantity} \n`;
+                pots += `${pot.name} x${quantity} \n`;
             }
         });
     }
-    embed.addField(":briefcase: Inventory", txt ? txt : "Empty");
+    let items = "";
+    if (user.items.length > 0) {
+        const reqs = [];
+        user.items.forEach(item => {
+            const req = Item.findOne({ _id: item[0] });
+            reqs.push(req);
+        });
+        const inv = await Promise.all(reqs);
+        inv.sort((a, b) => a.rarity - b.rarity).forEach((item, i) => {
+            const quantity = user.items[i][1];
+            if (quantity > 0) {
+                items += `${item.name} x${quantity} \n`;
+            }
+        });
+    }
+    embed.addField(":briefcase: Potions", pots ? pots : "Empty");
+    embed.addField(":toolbox: Items", items ? items : "Empty");
     message.channel.send(embed);
     return 1;
 }

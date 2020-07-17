@@ -1,12 +1,14 @@
 const Discord = require("discord.js");
 const User = require("../models/User");
 const Potion = require("../models/Potion");
+const Item = require("../models/Item");
 const { color } = require("../config.json");
+const pickItem = require("../functions/pickitem");
 
 const { calculateMana, calculateExp, calculateMobMana, calculateMobExp } = require("../formulas");
 const max = 6;
 
-module.exports.cooldown = 15;
+module.exports.cooldown = 1;
 
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id }).exec();
@@ -31,7 +33,13 @@ module.exports.execute = async message => {
     const e = calculateMobExp(user.level);
 
     // Keep track of all changes
-    const changes = {experience: user.experience, mana: user.mana, level: user.level, items: user.items};
+    const changes = {
+        experience: user.experience,
+        mana: user.mana,
+        level: user.level,
+        potions: user.potions,
+        items: user.items
+    };
     changes.mana[0] = user.mana[0] - m * n;
     const oldMana = user.mana[1];
 
@@ -50,10 +58,10 @@ module.exports.execute = async message => {
         changes.experience[1] = total;
     }
 
-    // Item drop
-    const drop = Math.random() < 0.25;
+    // Potion drop
+    const dropPotion = Math.random() < 0.25;
     let pot;
-    if (drop) {
+    if (dropPotion) {
         const choose = Math.random();
         if (choose < 0.66) {
             pot = await Potion.findOne({ name: "Small Mana Potion" });
@@ -63,14 +71,32 @@ module.exports.execute = async message => {
             pot = await Potion.findOne({ name: "Large Mana Potion" });
         }
         let found = false;
+        for (let i = 0; i < changes.potions.length; i++) {
+            if (changes.potions[i][0] == pot._id.toString() && !found && changes.potions[i][1] > 0) {
+                found = true;
+                changes.potions[i][1] = changes.potions[i][1] + 1;
+            }
+        }
+        if (!found) changes.potions.push([pot._id, 1]);
+    }
+
+    // Item drop
+    const dropItem = Math.random() < 0.25;
+    let item, itemRarity;
+    if (dropItem) {
+        const pick = pickItem();
+        itemRarity = pick.rarity;
+        item = await Item.findOne({ name: pick.picked });
+        let found = false;
         for (let i = 0; i < changes.items.length; i++) {
-            if (changes.items[i][0] == pot._id.toString() && !found && changes.items[i][1] > 0) {
+            if (changes.items[i][0] == item._id.toString() && !found && changes.items[i][1] > 0) {
                 found = true;
                 changes.items[i][1] = changes.items[i][1] + 1;
             }
         }
-        if (!found) changes.items.push([pot._id, 1]);
+        if (!found) changes.items.push([item._id, 1]);
     }
+
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
@@ -92,7 +118,8 @@ module.exports.execute = async message => {
             { name: ":droplet: Current Mana", value: user.mana[0] + "/" + user.mana[1]},
         );
     }
-    if (drop) embed.addField(":bento: Items found", pot.name + " x1");
+    if (dropPotion) embed.addField(":bento: Potion found!", pot.name + " x1");
+    if (dropItem) embed.addField(`:skull_crossbones: ${itemRarity} item found!`, item.name + " x1");
     message.channel.send(embed);
     User.updateOne({ id: message.author.id }, { $set: changes }).exec();
     return 1;

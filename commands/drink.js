@@ -40,11 +40,11 @@ module.exports.execute = async (message, args) => {
     // Drinking potion
     const pot = await Potion.findOne({ name }).exec();
     let found = false;
-    user.items.forEach(async (item, i) => {
-        if (item[0] == pot._id.toString() && !found && user.items[i][1] > 0) {
+    user.potions.forEach(async (potion, i) => {
+        if (potion[0] == pot._id.toString() && !found && potion[1] > 0) {
             found = true;
-            const changes = {mana: user.mana, items: user.items};
-            changes.items[i][1] = changes.items[i][1] - 1;
+            const changes = {mana: user.mana, potions: user.potions};
+            changes.potions[i][1] = changes.potions[i][1] - 1;
             const initial = changes.mana[0];
             const newMana = initial + Math.floor(changes.mana[1] * pot.power / 100);
             changes.mana[0] = Math.min(newMana, changes.mana[1]);
