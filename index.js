@@ -46,13 +46,12 @@ client.on("message", async message => {
 	if (cds.get(command).has(id)) {
 		let init = cds.get(command).get(id);
 		let curr = new Date();
-		let diff = Math.round((curr-init)/1000);
+		let diff = Math.ceil((curr-init)/1000);
 		message.channel.send(new Discord.MessageEmbed()
             .setColor("#ff0000")
-            .setTitle("You are on cooldown!")
 			.addFields(
-				{ name: `Cooldown on ${command} command`, value: `${cd} seconds` },
-				{ name: "Time left", value: `${cd-diff} seconds` }
+				{ name: ":clock: Time left on cooldown", value: `${cd-diff} seconds` },
+				{ name: `:name_badge: Total cooldown on ${command}`, value: `${cd} seconds` }
 			)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
