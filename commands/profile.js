@@ -31,8 +31,8 @@ module.exports.execute = async message => {
     }
 
     // Check for inventory
-    let pots = "";
     if (user.potions.length > 0) {
+        consr pots = [];
         const reqs = [];
         user.potions.forEach(potion => {
             const req = Potion.findOne({ _id: potion[0] });
@@ -42,12 +42,14 @@ module.exports.execute = async message => {
         inv.forEach((pot, i) => {
             const quantity = user.potions[i][1];
             if (quantity > 0) {
-                pots += `${pot.name} x${quantity} \n`;
+                pots.push(`${pot.name} x${quantity}`)`;
             }
         });
+        embed.addField(":toolbox: Potions", pots.sort().join('\n'));
     }
-    let items = "";
+
     if (user.items.length > 0) {
+        const items = [];
         const reqs = [];
         user.items.forEach(item => {
             const req = Item.findOne({ _id: item[0] });
@@ -58,13 +60,12 @@ module.exports.execute = async message => {
         inv.forEach((item, i) => {
             const quantity = user.items[i][1];
             if (quantity > 0 && limiter-- > 0) {
-                items += `${item.name} x${quantity} \n`;
+                items.push(`${item.name} x${quantity}`);
             }
         });
-        if (limiter < 1) items += `... more`;
+        if (limiter < 1) items.push(`... more`);
+        embed.addField(":briefcase: Items", items.sort().join('\n'));
     }
-    embed.addField(":briefcase: Potions", pots ? pots : "Empty");
-    embed.addField(":toolbox: Items", items ? items : "Empty");
 
     message.channel.send(embed);
     return 1;
