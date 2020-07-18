@@ -32,7 +32,7 @@ module.exports.execute = async message => {
 
     // Check for inventory
     if (user.potions.length > 0) {
-        consr pots = [];
+        const pots = [];
         const reqs = [];
         user.potions.forEach(potion => {
             const req = Potion.findOne({ _id: potion[0] });
