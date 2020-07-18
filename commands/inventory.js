@@ -17,7 +17,7 @@ module.exports.execute = async message => {
         .setTimestamp();
 
     // Potions
-    let pots = "";
+    const pots = [];
     if (user.potions.length > 0) {
         const reqs = [];
         user.potions.forEach(potion => {
@@ -28,13 +28,13 @@ module.exports.execute = async message => {
         inv.forEach((pot, i) => {
             const quantity = user.potions[i][1];
             if (quantity > 0) {
-                pots += `${pot.name} x${quantity} \n`;
+                pots.push(`${pot.name} x${quantity}`);
             }
         });
     }
 
     // Items
-    let items = "";
+    const items = [];
     if (user.items.length > 0) {
         const reqs = [];
         user.items.forEach(item => {
@@ -45,12 +45,13 @@ module.exports.execute = async message => {
         inv.forEach((item, i) => {
             const quantity = user.items[i][1];
             if (quantity > 0) {
-                items += `${item.name} x${quantity} \n`;
+                items.push(`${item.name} x${quantity}`);
             }
         });
     }
-    embed.addField(":briefcase: Potions", pots ? pots : "Empty");
-    embed.addField(":toolbox: Items", items ? items : "Empty");
+
+    embed.addField(":toolbox: Potions", pots ? pots.sort().join('\n') : "Empty");
+    embed.addField(":birefcase: Items", items ? items.sort().join('\n') : "Empty");
 
     message.channel.send(embed);
     return 1;
