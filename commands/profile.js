@@ -42,7 +42,7 @@ module.exports.execute = async message => {
         inv.forEach((pot, i) => {
             const quantity = user.potions[i][1];
             if (quantity > 0) {
-                pots.push(`${pot.name} x${quantity}`)`;
+                pots.push(`${pot.name} x${quantity}`);
             }
         });
         embed.addField(":toolbox: Potions", pots.sort().join('\n'));
