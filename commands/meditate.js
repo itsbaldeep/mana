@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const User = require("../models/User");
 const { color } = require("../config.json");
+const { replenishMana } = require("../formulas");
 
 module.exports.cooldown = 60;
 
@@ -20,10 +21,7 @@ module.exports.execute = async message => {
     // Replenishing mana
     const changes = { mana: user.mana };
     const initial = user.mana[0];
-    const min = user.level;
-    const max = user.level * 4 + 40;
-    const replenished = Math.floor(Math.random() * (max + min -1)) + min;
-    changes.mana[0] = Math.min(initial + replenished, changes.mana[1]);
+    changes.mana[0] = Math.min(initial + replenishMana(user.level), changes.mana[1]);
     await User.updateOne({ id: message.author.id }, { $set: changes }).exec();
     message.channel.send(new Discord.MessageEmbed()
         .setColor(color)
