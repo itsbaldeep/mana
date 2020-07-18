@@ -49,7 +49,7 @@ module.exports.execute = async message => {
     }
 
     if (user.items.length > 0) {
-        const items = [];
+        let items = [];
         const reqs = [];
         user.items.forEach(item => {
             const req = Item.findOne({ _id: item[0] });
@@ -63,8 +63,9 @@ module.exports.execute = async message => {
                 items.push(`${item.name} x${quantity}`);
             }
         });
+        items = items.sort();
         if (limiter < 1) items.push(`... more`);
-        if (items.length > 0) embed.addField(":briefcase: Items", items.sort().join('\n'));
+        if (items.length > 0) embed.addField(":briefcase: Items", items.join('\n'));
     }
 
     message.channel.send(embed);
