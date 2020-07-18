@@ -51,7 +51,7 @@ module.exports.execute = async message => {
     }
 
     embed.addField(":toolbox: Potions", pots.length > 0 ? pots.sort().join('\n') : "Empty");
-    embed.addField(":birefcase: Items", items.length > 0 ? items.sort().join('\n') : "Empty");
+    embed.addField(":briefcase: Items", items.length > 0 ? items.sort().join('\n') : "Empty");
 
     message.channel.send(embed);
     return 1;
