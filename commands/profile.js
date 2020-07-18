@@ -42,12 +42,13 @@ module.exports.execute = async message => {
     let items = "";
     if (user.items.length > 0) {
         const reqs = [];
+        user.items = user.items.sort((a, b) => a[0].toString() - b[0].toString());
         user.items.forEach(item => {
             const req = Item.findOne({ _id: item[0] });
             reqs.push(req);
         });
         const inv = await Promise.all(reqs);
-        inv.sort((a, b) => a.rarity - b.rarity).forEach((item, i) => {
+        inv.forEach((item, i) => {
             const quantity = user.items[i][1];
             if (quantity > 0) {
                 items += `${item.name} x${quantity} \n`;
