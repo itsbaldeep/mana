@@ -45,7 +45,7 @@ module.exports.execute = async message => {
                 pots.push(`${pot.name} x${quantity}`);
             }
         });
-        embed.addField(":toolbox: Potions", pots.sort().join('\n'));
+        if (pots.length > 0) embed.addField(":toolbox: Potions", pots.sort().join('\n'));
     }
 
     if (user.items.length > 0) {
@@ -64,7 +64,7 @@ module.exports.execute = async message => {
             }
         });
         if (limiter < 1) items.push(`... more`);
-        embed.addField(":briefcase: Items", items.sort().join('\n'));
+        if (items.length > 0) embed.addField(":briefcase: Items", items.sort().join('\n'));
     }
 
     message.channel.send(embed);
