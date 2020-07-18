@@ -42,7 +42,6 @@ module.exports.execute = async message => {
     let items = "";
     if (user.items.length > 0) {
         const reqs = [];
-        user.items = user.items.sort((a, b) => a[0].toString() - b[0].toString());
         user.items.forEach(item => {
             const req = Item.findOne({ _id: item[0] });
             reqs.push(req);
