@@ -36,6 +36,21 @@ module.exports.execute = async (message, args) => {
     const quantity = args.shift();
     const name = args.join(" ");
 
+    const giver = await User.findOne({ id: message.author.id });
+    const taker = await User.findOne({ id: mention.id });
+
+    // Validating if mentioned user exists
+    if (!taker) {
+        message.channel.send(new Discord.MessageEmbed()
+            .setColor("#ff0000")
+            .addField(":name_badge: Unable to share!", "The person has no profile and he/she needs to run a command first!")
+            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
+            .setTimestamp()
+        );
+        return;
+    }
+
+
     // Finding the item or potion
     const potions = await Potion.find();
     const items = await Item.find();
@@ -52,9 +67,6 @@ module.exports.execute = async (message, args) => {
         );
         return;
     }
-
-    const giver = await User.findOne({ id: message.author.id });
-    const taker = await User.findOne({ id: mention.id });
 
     // Checking if user actually has that item
     let found;
