@@ -4,7 +4,7 @@ const User = require("../models/User");
 const Item = require("../models/Item");
 const { color } = require("../config.json");
 
-module.exports.cooldown = 1;
+module.exports.cooldown = 5;
 
 module.exports.execute = async (message, args) => {
     // Validating query
@@ -22,19 +22,31 @@ module.exports.execute = async (message, args) => {
         return;
     }
     
-    
     // Finding IDs of all required items
     const reqs = [];
     reqs.push(Item.findOne({ name: name + " Arm"}))
     reqs.push(Item.findOne({ name: name + " Leg"}))
     reqs.push(Item.findOne({ name: name + " Chest"}))
     reqs.push(Item.findOne({ name: name + " Skull"}))
-    const [ arm, leg, chest, skull ] = await Promise.all(reqs);
+    reqs.push(Item.findOne({ name: "Scroll of Mages"}))
+    const [ arm, leg, chest, skull, scroll ] = await Promise.all(reqs);
     
     const user = await User.findOne({ id: message.author.id });
 
+    // Checking if user already has pet
+    if (user.pet) {
+        message.channel.send(new Discord.MessageEmbed()
+            .setColor("#ff0000")
+            .addField(":name_badge: Unable to summon!", `You already have a pet!`)
+            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
+            .setTimestamp()
+        );
+        return;
+    }
+
     // Checking users inventory
-    let bones = [];
+    let bones = []; // [{ item, quantity, index }, ...]
+    let scrolls = {}; // { exists, quantity, index }
     user.items.forEach((item, i) => {
         if (arm._id.toString() == item[0]) {
             bones.push({ item: name + " Arm", quantity: item[1], index: i });
@@ -47,6 +59,9 @@ module.exports.execute = async (message, args) => {
         }
         if (skull._id.toString() == item[0]) {
             bones.push({ item: name + " Skull", quantity: item[1], index: i });
+        }
+        if (scroll._id.toString() == item[0]) {
+            scrolls = { exists: true, quantity: item[1], index: i };
         }
     });
 
@@ -64,11 +79,11 @@ module.exports.execute = async (message, args) => {
         return;
     }
 
-    // Checking if user already has pet
-    if (user.pet) {
+    // Checking for legendary pet
+    if (pet.rarity == "Legendary" && (!scrolls.exists || scrolls.quantity < 3)) {
         message.channel.send(new Discord.MessageEmbed()
             .setColor("#ff0000")
-            .addField(":name_badge: Unable to summon!", `You already have a pet!`)
+            .addField(":name_badge: Insufficient scrolls!", `You need 3 scrolls to summon a legendary pet, and you currently have ${scrolls.quantity}!`)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
         );
@@ -82,16 +97,21 @@ module.exports.execute = async (message, args) => {
     // Removing bones from inventory
     bones.forEach((bone, i) => {
         // First two bones are arm and legs that need to be removed twice
-        const n = i < 2 ? 2 : 1;
+        const n = bone.item.includes("Arm") || bone.item.includes("Leg") ? 2 : 1;
         changes.items[bone.index][1] = changes.items[bone.index][1] - n;
     });
+
+    // Remove 3 scrolls if pet is legendary
+    if (pet.rarity == "Legendary") {
+        changes.items[scrolls.index][1] = changes.items[scrolls.index][1] - 3;
+    }
 
     // Updating the user
     await User.updateOne({ id: message.author.id }, { $set: changes });
 
     message.channel.send(new Discord.MessageEmbed()
         .setColor(color)
-        .addField(":fire: Pet summoned!", `You have succesfully summoned ${name}!`)
+        .addField(`:fire: ${pet.rarity} pet summoned!`, `You have succesfully summoned ${name}!`)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
     );

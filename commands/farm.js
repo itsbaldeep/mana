@@ -59,7 +59,7 @@ module.exports.execute = async message => {
     }
 
     // Potion drop
-    const dropPotion = Math.random() < 0.25;
+    const dropPotion = Math.random() < 0.4;
     let pot;
     if (dropPotion) {
         const choose = Math.random();

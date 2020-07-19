@@ -60,11 +60,10 @@ module.exports.execute = async message => {
         inv.forEach((item, i) => {
             const quantity = user.items[i][1];
             if (quantity > 0 && limiter-- > 0) {
-                items.push(`${item.name} x${quantity}`);
+                items.unshift(`${item.name} x${quantity}`);
             }
         });
-        items = items.sort();
-        if (limiter < 1) items.push(`... more`);
+        if (limiter < 0) items.push(`... more`);
         if (items.length > 0) embed.addField(":briefcase: Items", items.join('\n'));
     }
 
