@@ -10,6 +10,18 @@ module.exports.execute = async message => {
     const mention = message.mentions.users.first();
     const author = mention || message.author;
     const user = await User.findOne({ id: author.id }).exec();
+
+    // Validating if mentioned user exists
+    if (!user) {
+        message.channel.send(new Discord.MessageEmbed()
+        .setColor("#ff0000")
+        .addField(":name_badge: Unable to show inventory!", "The person has no profile and he/she needs to run a command first!")
+        .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
+        .setTimestamp()
+        );
+        return;
+    }
+
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setThumbnail(author.displayAvatarURL())
