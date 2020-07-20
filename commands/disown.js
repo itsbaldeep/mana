@@ -1,9 +1,12 @@
 const User = require("../models/User");
 const Pet = require("../models/Pet");
 const Discord = require("discord.js");
-const { color } = require("../config.json");
+const { prefix, color } = require("../config.json");
 
 module.exports.cooldown = 5;
+module.exports.description = "You can disown your pet if you want a new one, or if you simply don't like your current one.";
+module.exports.usage = `${prefix}disown <pet name>`;
+module.exports.aliases = [];
 
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id });

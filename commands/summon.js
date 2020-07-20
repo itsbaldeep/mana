@@ -2,9 +2,12 @@ const Discord = require("discord.js");
 const Pet = require("../models/Pet");
 const User = require("../models/User");
 const Item = require("../models/Item");
-const { color } = require("../config.json");
+const { prefix, color } = require("../config.json");
 
 module.exports.cooldown = 5;
+module.exports.description = "You can summon a pet using this command. You just need 2 arm bones, 2 leg bones, 1 chest bone and 1 skull in your inventory! Also make sure that you have enough scrolls if you want a legendary pet.";
+module.exports.usage = `${prefix}summon <pet name>`;
+module.exports.aliases = [];
 
 module.exports.execute = async (message, args) => {
     // Validating query
@@ -45,31 +48,28 @@ module.exports.execute = async (message, args) => {
     }
 
     // Checking users inventory
-    let bones = []; // [{ item, quantity, index }, ...]
+    let bones = { arm: {}, leg: {}, chest: {}, skull: {} }; // { quantity, index }
     let scrolls = {}; // { exists, quantity, index }
     user.items.forEach((item, i) => {
         if (arm._id.toString() == item[0]) {
-            bones.push({ item: name + " Arm", quantity: item[1], index: i });
+            bones.arm = { quantity: item[1], index: i };
         }
         if (leg._id.toString() == item[0]) {
-            bones.push({ item: name + " Leg", quantity: item[1], index: i });
+            bones.leg = { quantity: item[1], index: i };
         }
         if (chest._id.toString() == item[0]) {
-            bones.push({ item: name + " Chest", quantity: item[1], index: i });
+            bones.chest = { quantity: item[1], index: i };
         }
         if (skull._id.toString() == item[0]) {
-            bones.push({ item: name + " Skull", quantity: item[1], index: i });
+            bones.skull = { quantity: item[1], index: i };
         }
         if (scroll._id.toString() == item[0]) {
             scrolls = { exists: true, quantity: item[1], index: i };
         }
     });
 
-    // Remove all the bones with 0 quantity;
-    bones = bones.filter(bone => bone.quantity > 0);
-
     // Check if user has all the bones and atleast 2 arm and legs
-    if (bones.length < 4 || bones[0].quantity < 2 || bones[1].quantity < 2) {
+    if (bones.arm.quantity < 2 || bones.leg.quantity < 2 || bones.chest.quantity < 1 || bones.skull.quantity < 1) {
         message.channel.send(new Discord.MessageEmbed()
             .setColor("#ff0000")
             .addField(":name_badge: Unable to summon!", `You don't have enough bones to summon ${name}!`)
@@ -95,11 +95,11 @@ module.exports.execute = async (message, args) => {
     changes.pet = pet._id;
 
     // Removing bones from inventory
-    bones.forEach((bone, i) => {
+    for (const bone in bones) {
         // First two bones are arm and legs that need to be removed twice
-        const n = bone.item.includes("Arm") || bone.item.includes("Leg") ? 2 : 1;
-        changes.items[bone.index][1] = changes.items[bone.index][1] - n;
-    });
+        const n = (bone == "arm" || bone == "leg") ? 2 : 1;
+        changes.items[bones[bone].index][1] = changes.items[bones[bone].index][1] - n;
+    }
 
     // Remove 3 scrolls if pet is legendary
     if (pet.rarity == "Legendary") {

@@ -2,13 +2,16 @@ const Discord = require("discord.js");
 const User = require("../models/User");
 const Potion = require("../models/Potion");
 const Item = require("../models/Item");
-const { color } = require("../config.json");
+const { prefix, color } = require("../config.json");
 const pickItem = require("../functions/pickitem");
 
 const { calculateMana, calculateExp, calculateMobMana, calculateMobExp } = require("../formulas");
 const max = 6;
 
 module.exports.cooldown = 15;
+module.exports.description = "By farming, you can get experience and you have a chance to get an item or a potion. This is the only way to get a legendary bone! It takes you mana, so make sure you have enough mana to farm.";
+module.exports.usage = `${prefix}farm`;
+module.exports.aliases = [];
 
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id }).exec();
@@ -59,7 +62,7 @@ module.exports.execute = async message => {
     }
 
     // Potion drop
-    const dropPotion = Math.random() < 0.4;
+    const dropPotion = Math.random() < 0.5;
     let pot;
     if (dropPotion) {
         const choose = Math.random();
@@ -81,7 +84,7 @@ module.exports.execute = async message => {
     }
 
     // Item drop
-    const dropItem = Math.random() < 0.25;
+    const dropItem = Math.random() < 0.3;
     let item, itemRarity;
     if (dropItem) {
         const pick = pickItem();

@@ -7,18 +7,21 @@ const User = require("./models/User");
 // Configuration files
 const { prefix } = require("./config.json");
 
-// Initializing client and commands and cooldowns
+// Initializing client and commands and cooldowns and aliases
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
+client.aliases = new Discord.Collection();
+client.cooldowns = new Discord.Collection();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-
-const cds = new Map();
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	const name = file.slice(0, -3);
-	cds.set(name, new Map());
+	client.cooldowns.set(name, new Map());
 	client.commands.set(name, command);
+	command.aliases.forEach(alias => {
+		client.aliases.set(alias, name);
+	})
 }
 
 // Connecting to Database
@@ -35,31 +38,41 @@ client.once("ready", () => {
 // Message function
 client.on("message", async message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(/ +/);
-	const command = args.shift().toLowerCase();
-	if (!client.commands.has(command)) return;
+	const args = message.content.slice(prefix.length).split(/ +/);
+	
+	// Command name
+	let cmd = args.shift().toLowerCase();
 
+	// Handling aliases
+	let command;
+	if (client.commands.has(cmd)) {
+		command = client.commands.get(cmd);
+	} else {
+		command = client.commands.get(client.aliases.get(cmd));
+		cmd = client.aliases.get(cmd);
+	}
+	
 	const id = message.author.id;
 
 	// Handling cooldowns
-	let cd = client.commands.get(command).cooldown;
-	if (cds.get(command).has(id)) {
-		let init = cds.get(command).get(id);
+	let cd = command.cooldown;
+	if (client.cooldowns.get(cmd).has(id)) {
+		let init = client.cooldowns.get(cmd).get(id);
 		let curr = new Date();
 		let diff = Math.ceil((curr-init)/1000);
 		message.channel.send(new Discord.MessageEmbed()
             .setColor("#ff0000")
 			.addFields(
-				{ name: ":clock: Time left on cooldown", value: `${cd-diff} seconds` },
-				{ name: `:name_badge: Total cooldown on ${command}`, value: `${cd} seconds` }
+				{ name: ":clock: Time left on cooldown", value: `${cd-diff + 1} second(s)` },
+				{ name: `:name_badge: Total cooldown on ${cmd}`, value: `${cd} seconds` }
 			)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
         );
 		return;
 	} else {
-		cds.get(command).set(id, new Date());
-		setTimeout(() => cds.get(command).delete(id), cd * 1000);
+		client.cooldowns.get(cmd).set(id, new Date());
+		setTimeout(() => client.cooldowns.get(cmd).delete(id), cd * 1000);
 	}
 
     try {
@@ -78,8 +91,8 @@ client.on("message", async message => {
 			});
 			await newUser.save();
 		}
-		const code = await client.commands.get(command).execute(message, args);
-		if (!code && cds.get(command).has(id)) cds.get(command).delete(id);
+		const code = await command.execute(message, args, client);
+		if (!code && client.cooldowns.get(cmd).has(id)) client.cooldowns.get(cmd).delete(id);
 	} catch (error) {
 		console.error(error);
 		message.reply("There was an error trying to execute that command!");

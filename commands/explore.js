@@ -2,13 +2,18 @@ const Discord = require("discord.js");
 const User = require("../models/User");
 const Item = require("../models/Item");
 const Potion = require("../models/Potion");
-const { color } = require("../config.json");
+const { prefix, color } = require("../config.json");
 const pickItem = require("../functions/pickitem");
 const { exploreExp, calculateExp, calculateMana } = require("../formulas");
 
-module.exports.cooldown = 20;
+module.exports.cooldown = 15;
+module.exports.description = "Exploring gives you a lot of experience and a guarantee to get either an item or a potion. Though you can't get any legendary item. It takes no mana at all!";
+module.exports.usage = `${prefix}explore`;
+module.exports.aliases = [];
 
 module.exports.execute = async message => {
+
+    // Initializing user variable and keeping track of changes
     const user = await User.findOne({ id: message.author.id });
     const changes = { 
         level: user.level, 
@@ -18,28 +23,53 @@ module.exports.execute = async message => {
         items: user.items 
     };
 
-    // Get a uncommon or common or rare item
-    function getItem() {
-        const pick = pickItem();
-        if (pick.rarity == "Legendary" || pick.rarity == "Scroll") {
-            return getItem();
-        }
-        return pick;
-    }
-    const pick = getItem();
-    const item = await Item.findOne({ name: pick.picked });
+    // If drop is true, give bone, else potion
+    const drop = Math.random() < 0.7;
 
-    // Get a potion
     let pot;
-    const choose = Math.random();
-    if (choose < 0.66) {
-        pot = await Potion.findOne({ name: "Small Mana Potion" });
-    } else if (choose < 0.88) {
-        pot = await Potion.findOne({ name: "Medium Mana Potion" });
-    } else {
-        pot = await Potion.findOne({ name: "Large Mana Potion" });
-    }
+    let pick;
 
+    if (drop) {
+        // Making sure there is no legendary item
+        function getItem() {
+            const pick = pickItem();
+            if (pick.rarity == "Legendary") return getItem();
+            return pick;
+        }
+        pick = getItem();
+        const item = await Item.findOne({ name: pick.picked });
+
+        // Putting that item in user's profile
+        let found = false;
+        for (let i = 0; i < changes.items.length; i++) {
+            if (changes.items[i][0] == item._id.toString() && !found && changes.items[i][1] > 0) {
+                found = true;
+                changes.items[i][1] = changes.items[i][1] + 1;
+            }
+        }
+        if (!found) changes.items.push([item._id, 1]);
+    } else {
+        // Get a potion
+        const choose = Math.random();
+        if (choose < 0.66) {
+            pot = await Potion.findOne({ name: "Small Mana Potion" });
+        } else if (choose < 0.88) {
+            pot = await Potion.findOne({ name: "Medium Mana Potion" });
+        } else {
+            pot = await Potion.findOne({ name: "Large Mana Potion" });
+        }
+
+        // Putting potion
+        let found = false;
+        for (let i = 0; i < changes.potions.length; i++) {
+            if (changes.potions[i][0] == pot._id.toString() && !found && changes.potions[i][1] > 0) {
+                found = true;
+                changes.potions[i][1] = changes.potions[i][1] + 1;
+            }
+        }
+        if (!found) changes.potions.push([pot._id, 1]);
+    }
+    
     // Handle experience
     const exp = exploreExp(user.level);
 
@@ -59,34 +89,18 @@ module.exports.execute = async message => {
         changes.experience[1] = total;
     }
 
-    // Putting that item in user's profile
-    let found = false;
-    for (let i = 0; i < changes.items.length; i++) {
-        if (changes.items[i][0] == item._id.toString() && !found && changes.items[i][1] > 0) {
-            found = true;
-            changes.items[i][1] = changes.items[i][1] + 1;
-        }
-    }
-    if (!found) changes.items.push([item._id, 1]);
-    
-    // Putting potion
-    found = false;
-    for (let i = 0; i < changes.potions.length; i++) {
-        if (changes.potions[i][0] == pot._id.toString() && !found && changes.potions[i][1] > 0) {
-            found = true;
-            changes.potions[i][1] = changes.potions[i][1] + 1;
-        }
-    }
-    if (!found) changes.potions.push([pot._id, 1]);
-
+    // Embed to send
     const embed = new Discord.MessageEmbed()
         .setColor(color)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
-        .addField(":earth_americas: Exploring finished!", `Gained ${exp} experience points`)
-        .addField(":bento: Potion found!", pot.name)
-        .addField(`:skull_crossbones: ${pick.rarity} item found!`, pick.picked)
+        .addField(":earth_americas: Exploring finished!", `Gained ${exp} experience points`);
 
+    // Add field according to the drop rate
+    if (!drop) embed.addField(":bento: Potion found!", pot.name);
+    else embed.addField(`:skull_crossbones: ${pick.rarity} item found!`, pick.picked);
+
+    // Add fields if user is levelled up
     if (lvlup) {
         embed.addFields(
             { name: ":star2: Level Up!", value: `${user.level} -> ${user.level + 1}` },
@@ -97,6 +111,7 @@ module.exports.execute = async message => {
         embed.addField(":book: Current Experience", user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`)
     }
 
+    // Updating user and sending message
     await User.updateOne({ id: message.author.id }, { $set: changes });
     message.channel.send(embed);
     return 1;   

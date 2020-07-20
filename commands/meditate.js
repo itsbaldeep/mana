@@ -1,9 +1,12 @@
 const Discord = require("discord.js");
 const User = require("../models/User");
-const { color } = require("../config.json");
 const { replenishMana } = require("../formulas");
+const { prefix, color } = require("../config.json");
 
 module.exports.cooldown = 60;
+module.exports.description = "You can meditate to replenish a large portion of your mana!";
+module.exports.usage = `${prefix}meditate`;
+module.exports.aliases = ["med"];
 
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id }).exec();

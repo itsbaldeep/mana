@@ -2,9 +2,12 @@ const User = require("../models/User");
 const Potion = require("../models/Potion");
 const Item = require("../models/Item");
 const Discord = require("discord.js");
-const { color } = require("../config.json");
+const { prefix, color } = require("../config.json");
 
 module.exports.cooldown = 10;
+module.exports.description = "Feeling wholesome? You can share items or potions with your friend easily by using this command!";
+module.exports.usage = `${prefix}share @mention <quantity> <item/potion name>`;
+module.exports.aliases = [];
 
 module.exports.execute = async (message, args) => {
     const mention = message.mentions.users.first();
@@ -49,7 +52,6 @@ module.exports.execute = async (message, args) => {
         );
         return;
     }
-
 
     // Finding the item or potion
     const potions = await Potion.find();
