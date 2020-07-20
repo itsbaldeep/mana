@@ -8,7 +8,7 @@ const pickItem = require("../functions/pickitem");
 const { calculateMana, calculateExp, calculateMobMana, calculateMobExp } = require("../formulas");
 const max = 6;
 
-module.exports.cooldown = 15;
+module.exports.cooldown = 8;
 module.exports.description = "By farming, you can get experience and you have a chance to get an item or a potion. This is the only way to get a legendary bone! It takes you mana, so make sure you have enough mana to farm.";
 module.exports.usage = `${prefix}farm`;
 module.exports.aliases = [];
@@ -62,7 +62,7 @@ module.exports.execute = async message => {
     }
 
     // Potion drop
-    const dropPotion = Math.random() < 0.5;
+    const dropPotion = Math.random() < 0.25;
     let pot;
     if (dropPotion) {
         const choose = Math.random();

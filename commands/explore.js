@@ -6,7 +6,7 @@ const { prefix, color } = require("../config.json");
 const pickItem = require("../functions/pickitem");
 const { exploreExp, calculateExp, calculateMana } = require("../formulas");
 
-module.exports.cooldown = 15;
+module.exports.cooldown = 16;
 module.exports.description = "Exploring gives you a lot of experience and a guarantee to get either an item or a potion. Though you can't get any legendary item. It takes no mana at all!";
 module.exports.usage = `${prefix}explore`;
 module.exports.aliases = [];
