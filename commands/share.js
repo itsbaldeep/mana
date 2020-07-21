@@ -36,8 +36,19 @@ module.exports.execute = async (message, args) => {
 
     // Getting name and quantity from the message
     args = args.slice(1);
-    const quantity = args.shift();
+    const quantity = parseInt(args.shift());
     const name = args.join(" ");
+
+    // Validating the quantity
+    if (quantity == NaN || !name) {
+        message.channel.send(new Discord.MessageEmbed()
+            .setColor(color.warning)
+            .addField(":name_badge: Unable to share!", "Please pass a valid number as quantity followed by name of the thing!")
+            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
+            .setTimestamp()
+        );
+        return;
+    }
 
     const giver = await User.findOne({ id: message.author.id });
     const taker = await User.findOne({ id: mention.id });
