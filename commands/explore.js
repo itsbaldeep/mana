@@ -115,29 +115,28 @@ module.exports.execute = async message => {
         .setColor(color)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
-        .addField(`:mag: Exploration Level ${range}`, `${mana} mana points are consumed`)
-        .addField(":earth_americas: Exploring finished", `Gained ${exp} experience points`);
-
-    // Add field according to the drop rate
-    if (!drop) embed.addField(":bento: Potion found!", pot.name);
-    else embed.addField(`:skull_crossbones: ${pick.rarity} item found!`, pick.picked);
+        .addField(`:mag: Exploration area ${range}`, `${mana} mana points are consumed`)
+        .addField(":earth_americas: Experience gained", `${exp} experience points`);
 
     // Add fields if user is levelled up
     if (lvlup) {
         if ((user.level + 1) % 5 == 1)
-            embed.addField(`:palm_tree: Entered a new exploration level ${findRange(user.level)}`, `Exploring will now take ${mana} mana points!`)
+            embed.addField(`:palm_tree: New exploration area ${findRange(user.level + 1)}`, `Exploring will now take ${exploreMana(user.level + 1)} mana points!`)
         embed.addFields(
             { name: ":star2: Level increased", value: `${user.level} -> ${user.level + 1}` },
             { name: ":sparkles: Maximum mana increased", value: `${oldMana} -> ${changes.mana[1]}` },
-            { name: ":book: Current Experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`}
+            { name: ":book: Current experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`}
         );
     } else {
         embed.addFields(
-            { name: ":book: Current Experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`},
-            { name: ":droplet: Current Mana", value: user.mana[0] + "/" + user.mana[1]}
+            { name: ":book: Current experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`},
+            { name: ":droplet: Current mana", value: user.mana[0] + "/" + user.mana[1]}
         )
-        
     }
+
+    // Add field according to the drop rate
+    if (!drop) embed.addField(":bento: Potion found", pot.name);
+    else embed.addField(`:skull_crossbones: ${pick.rarity} item found`, pick.picked);
 
     // Updating user and sending message
     await User.updateOne({ id: message.author.id }, { $set: changes });

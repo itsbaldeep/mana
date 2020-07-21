@@ -113,16 +113,16 @@ module.exports.execute = async message => {
         embed.addFields(
             { name: ":star2: Level increased", value: `${user.level} -> ${user.level + 1}` },
             { name: ":sparkles: Maximum mana increased", value: `${oldMana} -> ${changes.mana[1]}` },
-            { name: ":book: Current Experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`}
+            { name: ":book: Current experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`}
         );
     } else {
         embed.addFields(
-            { name: ":book: Current Experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`},
-            { name: ":droplet: Current Mana", value: user.mana[0] + "/" + user.mana[1]},
+            { name: ":book: Current experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`},
+            { name: ":droplet: Current mana", value: user.mana[0] + "/" + user.mana[1]},
         );
     }
-    if (dropPotion) embed.addField(":bento: Potion found!", pot.name + " x1");
-    if (dropItem) embed.addField(`:skull_crossbones: ${itemRarity} item found!`, item.name + " x1");
+    if (dropPotion) embed.addField(":bento: Potion found", pot.name + " x1");
+    if (dropItem) embed.addField(`:skull_crossbones: ${itemRarity} item found`, item.name + " x1");
     message.channel.send(embed);
     User.updateOne({ id: message.author.id }, { $set: changes }).exec();
     return 1;
