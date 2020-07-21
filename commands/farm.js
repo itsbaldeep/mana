@@ -106,18 +106,18 @@ module.exports.execute = async message => {
         .setTimestamp()
         .addFields(
             { name: ":ghost: Farming done", value: `${n} monster(s) slayed while farming` },
-            { name: ":fire: Total experience gained", value: `${e * n} experience points (${e} per monster)` }, 
-            { name: ":sweat_drops: Total mana taken", value: `${m * n} mana points (${m} per monster)` },
+            { name: ":fire: Experience gained", value: `${e * n} experience points` }, 
+            { name: ":sweat_drops: Mana consumed", value: `${m * n} mana points` },
         );
     if (lvlup) {
         embed.addFields(
             { name: ":star2: Level increased", value: `${user.level} -> ${user.level + 1}` },
             { name: ":sparkles: Maximum mana increased", value: `${oldMana} -> ${changes.mana[1]}` },
-            { name: ":book: Current experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`}
+            { name: ":book: Current experience", value: user.experience[1] + "/" + calculateExp(user.experience[0], user.level)}
         );
     } else {
         embed.addFields(
-            { name: ":book: Current experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`},
+            { name: ":book: Current experience", value: user.experience[1] + "/" + calculateExp(user.experience[0], user.level)},
             { name: ":droplet: Current mana", value: user.mana[0] + "/" + user.mana[1]},
         );
     }
