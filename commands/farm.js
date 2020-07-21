@@ -15,6 +15,7 @@ module.exports.aliases = [];
 
 module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id }).exec();
+    const findRange = level => `${level - (level-1) % 5} - ${level - (level-1) % 5 + 4}`;
     
     // Check for minimum mana
     const m = calculateMobMana(user.level);
