@@ -5,7 +5,7 @@ const Item = require("../models/Item");
 const { prefix, color } = require("../config.json");
 const pickItem = require("../functions/pickitem");
 
-const { calculateMana, calculateExp, calculateMobMana, calculateMobExp } = require("../formulas");
+const { calculateMana, calculateExp, calculateMobMana, calculateMobExp, exploreMana } = require("../formulas");
 const max = 6;
 
 module.exports.cooldown = 8;
