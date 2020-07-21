@@ -17,7 +17,7 @@ module.exports.execute = async message => {
     // Validating if mentioned user exists
     if (!user) {
         message.channel.send(new Discord.MessageEmbed()
-        .setColor("#ff0000")
+        .setColor(color.warning)
         .addField(":name_badge: Unable to show inventory!", "The person has no profile and he/she needs to run a command first!")
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
@@ -26,7 +26,7 @@ module.exports.execute = async message => {
     }
 
     const embed = new Discord.MessageEmbed()
-        .setColor(color)
+        .setColor(color.primary)
         .setThumbnail(author.displayAvatarURL())
         .setAuthor(author.username + "#" + author.discriminator, author.displayAvatarURL())
         .setTimestamp();

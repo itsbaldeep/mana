@@ -8,7 +8,7 @@ module.exports.execute = (message, args, client) => {
     const cmd = args.shift();
     if (!cmd || cmd == "help" || !client.commands.has(cmd)) {
         const embed = new MessageEmbed()
-            .setColor(color)
+            .setColor(color.primary)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
         const cmds = []
@@ -23,7 +23,7 @@ module.exports.execute = (message, args, client) => {
     try {
         const command = client.commands.get(cmd);
         const embed = new MessageEmbed()
-            .setColor(color)
+            .setColor(color.primary)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
             .addFields(

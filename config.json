@@ -1,4 +1,7 @@
 {
     "prefix": "~",
-    "color": "#e65589"
+    "color": {
+        "primary": "#e65589",
+        "warning": "ff1347"
+    }
 }

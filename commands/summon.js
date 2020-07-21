@@ -17,7 +17,7 @@ module.exports.execute = async (message, args) => {
     const pet = await Pet.findOne({ name: name });
     if (!pet) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to summon!", "Please pass a valid pet name!")
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -39,7 +39,7 @@ module.exports.execute = async (message, args) => {
     // Checking if user already has pet
     if (user.pet) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to summon!", `You already have a pet!`)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -71,7 +71,7 @@ module.exports.execute = async (message, args) => {
     // Check if user has all the bones and atleast 2 arm and legs
     if (bones.arm.quantity < 2 || bones.leg.quantity < 2 || bones.chest.quantity < 1 || bones.skull.quantity < 1) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to summon!", `You don't have enough bones to summon ${name}!`)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -82,7 +82,7 @@ module.exports.execute = async (message, args) => {
     // Checking for legendary pet
     if (pet.rarity == "Legendary" && (!scrolls.exists || scrolls.quantity < 3)) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Insufficient scrolls!", `You need 3 scrolls to summon a legendary pet, and you currently have ${scrolls.quantity}!`)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -110,7 +110,7 @@ module.exports.execute = async (message, args) => {
     await User.updateOne({ id: message.author.id }, { $set: changes });
 
     message.channel.send(new Discord.MessageEmbed()
-        .setColor(color)
+        .setColor(color.primary)
         .addField(`:fire: ${pet.rarity} pet summoned!`, `You have succesfully summoned ${name}!`)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()

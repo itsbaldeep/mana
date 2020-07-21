@@ -14,7 +14,7 @@ module.exports.execute = async message => {
     // Checking if user doesn't have a pet
     if (!user.pet) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to disown!", "You don't even have a pet to begin with!")
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -26,7 +26,7 @@ module.exports.execute = async message => {
     const pet = await Pet.findOne({ _id: user.pet });
     await User.updateOne({ id: message.author.id }, { $set: { pet: null }});
     message.channel.send(new Discord.MessageEmbed()
-        .setColor(color)
+        .setColor(color.primary)
         .addField(`:dash: Disowned pet successfully!`, `You no longer own ${pet.name}!`)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()

@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const User = require("./models/User");
 
 // Configuration files
-const { prefix } = require("./config.json");
+const { prefix, color } = require("./config.json");
 
 // Initializing client and commands and cooldowns and aliases
 const client = new Discord.Client();
@@ -61,7 +61,7 @@ client.on("message", async message => {
 		let curr = new Date();
 		let diff = Math.ceil((curr-init)/1000);
 		message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
 			.addFields(
 				{ name: ":clock: Time left on cooldown", value: `${cd-diff + 1} second(s)` },
 				{ name: `:name_badge: Total cooldown on ${cmd}`, value: `${cd} seconds` }

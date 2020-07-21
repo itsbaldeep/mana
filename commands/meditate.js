@@ -13,7 +13,7 @@ module.exports.execute = async message => {
     // Checking for max mana
     if (user.mana[0] == user.mana[1]) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor(color)
+            .setColor(color.primary)
             .addField(":droplet: Maximum mana!", `You already have maximum mana! (${user.mana[0]}/${user.mana[1]})`)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -27,9 +27,9 @@ module.exports.execute = async message => {
     changes.mana[0] = Math.min(initial + replenishMana(user.level), changes.mana[1]);
     await User.updateOne({ id: message.author.id }, { $set: changes }).exec();
     message.channel.send(new Discord.MessageEmbed()
-        .setColor(color)
+        .setColor(color.primary)
         .addFields(
-            { name: ":stars: Meditation successful!", value: `Replenished ${changes.mana[0] - initial} mana points!`},
+            { name: ":stars: Meditation successful!", value: `Replenished **${changes.mana[0] - initial} mana points**!`},
             { name: ":droplet: Current Mana", value: `${changes.mana[0]}/${changes.mana[1]}`}
         )
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())

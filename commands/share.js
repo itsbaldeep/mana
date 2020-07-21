@@ -15,7 +15,7 @@ module.exports.execute = async (message, args) => {
     // Validating if a user is mentioned
     if (!mention) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to share!", "Please mention a valid user!")
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -26,7 +26,7 @@ module.exports.execute = async (message, args) => {
     // Verifying if it isn't a self mention
     if (mention.id == message.author.id) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to share!", "You can't give items to yourself!")
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -45,7 +45,7 @@ module.exports.execute = async (message, args) => {
     // Validating if mentioned user exists
     if (!taker) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to share!", "The person has no profile and he/she needs to run a command first!")
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -62,7 +62,7 @@ module.exports.execute = async (message, args) => {
     // Validating if the thing actually exists or not
     if (!thing) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to share!", "Please pass a valid item or potion name!")
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -96,7 +96,7 @@ module.exports.execute = async (message, args) => {
 
     if (!found) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to share!", "You don't have that much of that thing in your inventory!")
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -135,7 +135,7 @@ module.exports.execute = async (message, args) => {
     }
 
     message.channel.send(new Discord.MessageEmbed()
-        .setColor(color)
+        .setColor(color.primary)
         .addField(`:two_women_holding_hands: ${obj.potion ? "Potion" : "Item"} shared with ${mention.username}`, quantity + "x " + thing.name)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()

@@ -29,12 +29,11 @@ module.exports.execute = async message => {
     const mana = exploreMana(user.level);
     if (user.mana[0] < mana) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
             .addFields(
-                { name: `:mag: Exploration Level ${range}`, value: `You need atleast ${mana} mana points to explore in this level range`},
-                { name: ":name_badge: Unable to explore!", value: "You have insufficient mana to explore" },
+                { name: `:mag: Exploration Level ${range}`, value: `You need atleast **${mana} mana points** to explore in this level range`},
                 { name: ":drop_of_blood: Replenish Mana", value: "Meditate or drink potions to replenish your mana!"},
             )
         );
@@ -112,7 +111,7 @@ module.exports.execute = async message => {
 
     // Embed to send
     const embed = new Discord.MessageEmbed()
-        .setColor(color)
+        .setColor(color.primary)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
         .addField(`:mag: Exploration area ${range}`, `${mana} mana points are consumed`)
@@ -125,7 +124,7 @@ module.exports.execute = async message => {
         embed.addFields(
             { name: ":star2: Level increased", value: `${user.level} -> ${user.level + 1}` },
             { name: ":sparkles: Maximum mana increased", value: `${oldMana} -> ${changes.mana[1]}` },
-            { name: ":book: Current experience", value: user.experience[1] + "/" + calculateExp(user.experience[0], user.level)},
+            { name: ":book: Current experience", value: user.experience[1] + "/" + calculateExp(user.experience[0], user.level + 1)},
         );
     } else {
         embed.addFields(

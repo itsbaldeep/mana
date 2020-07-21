@@ -20,7 +20,7 @@ module.exports.execute = async message => {
     const m = calculateMobMana(user.level);
     if (user.mana[0] < m * max) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
             .addFields(
@@ -101,7 +101,7 @@ module.exports.execute = async message => {
     }
 
     const embed = new Discord.MessageEmbed()
-        .setColor(color)
+        .setColor(color.primary)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
         .addFields(
@@ -110,10 +110,12 @@ module.exports.execute = async message => {
             { name: ":sweat_drops: Mana consumed", value: `${m * n} mana points` },
         );
     if (lvlup) {
+        if ((user.level + 1) % 5 == 1)
+            embed.addField(`:palm_tree: New exploration area ${findRange(user.level + 1)}`, `Exploring will now take ${exploreMana(user.level + 1)} mana points!`)
         embed.addFields(
             { name: ":star2: Level increased", value: `${user.level} -> ${user.level + 1}` },
             { name: ":sparkles: Maximum mana increased", value: `${oldMana} -> ${changes.mana[1]}` },
-            { name: ":book: Current experience", value: user.experience[1] + "/" + calculateExp(user.experience[0], user.level)}
+            { name: ":book: Current experience", value: user.experience[1] + "/" + calculateExp(user.experience[0], user.level + 1)}
         );
     } else {
         embed.addFields(

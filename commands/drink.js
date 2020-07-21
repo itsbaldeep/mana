@@ -20,7 +20,7 @@ module.exports.execute = async (message, args) => {
         name = "Large Mana Potion";
     } else {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Unable to drink!", "Please pass a valid potion name!")
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -32,7 +32,7 @@ module.exports.execute = async (message, args) => {
     const user = await User.findOne({ id: message.author.id }).exec();
     if (user.mana[0] == user.mana[1]) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor(color)
+            .setColor(color.primary)
             .addField(":droplet: Maximum mana!", `You already have maximum mana! (${user.mana[0]}/${user.mana[1]})`)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
@@ -53,9 +53,9 @@ module.exports.execute = async (message, args) => {
             changes.mana[0] = Math.min(newMana, changes.mana[1]);
             await User.updateOne({ id: message.author.id }, { $set: changes }).exec();
             message.channel.send(new Discord.MessageEmbed()
-                .setColor(color)
+                .setColor(color.primary)
                 .addFields(
-                    { name: `:wine_glass: Drank ${pot.name} successfully!`, value: `Replenished ${changes.mana[0] - initial} mana points!` },
+                    { name: `:wine_glass: Drank ${pot.name} successfully!`, value: `Replenished **${changes.mana[0] - initial} mana points**!` },
                     { name: ":droplet: Current Mana", value: `${changes.mana[0]}/${changes.mana[1]}`}
                 )
                 .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
@@ -67,7 +67,7 @@ module.exports.execute = async (message, args) => {
     // If user doesn't have the potion
     if (!found) {
         message.channel.send(new Discord.MessageEmbed()
-            .setColor("#ff0000")
+            .setColor(color.warning)
             .addField(":name_badge: Potion not found!", `You don't have ${pot.name} in your inventory!`)
             .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
             .setTimestamp()
