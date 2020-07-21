@@ -62,7 +62,7 @@ module.exports.execute = async message => {
     }
 
     // Potion drop
-    const dropPotion = Math.random() < 0.25;
+    const dropPotion = Math.random() < 0.3;
     let pot;
     if (dropPotion) {
         const choose = Math.random();
@@ -105,13 +105,13 @@ module.exports.execute = async message => {
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
         .addFields(
-            { name: ":star2: Farming done!", value: `${n} monster(s) found while farming` },
+            { name: ":ghost: Farming done", value: `${n} monster(s) slayed while farming` },
             { name: ":fire: Total experience gained", value: `${e * n} experience points (${e} per monster)` }, 
             { name: ":sweat_drops: Total mana taken", value: `${m * n} mana points (${m} per monster)` },
         );
     if (lvlup) {
         embed.addFields(
-            { name: ":star2: Level Up!", value: `${user.level} -> ${user.level + 1}` },
+            { name: ":star2: Level increased", value: `${user.level} -> ${user.level + 1}` },
             { name: ":sparkles: Maximum mana increased", value: `${oldMana} -> ${changes.mana[1]}` },
             { name: ":book: Current Experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`}
         );

@@ -3,7 +3,7 @@ const Pet = require("../models/Pet");
 const Discord = require("discord.js");
 const { prefix, color } = require("../config.json");
 
-module.exports.cooldown = 5;
+module.exports.cooldown = 2;
 module.exports.description = "You can disown your pet if you want a new one, or if you simply don't like your current one.";
 module.exports.usage = `${prefix}disown <pet name>`;
 module.exports.aliases = [];

@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const User = require("../models/User");
 const { prefix, color } = require("../config.json");
 
-module.exports.cooldown = 30;
+module.exports.cooldown = 16;
 module.exports.description = "If you are low on mana and you have a potion in your inventory, then you can drink that potion to replenish your mana!";
 module.exports.usage = `${prefix}drink <potion name>`;
 module.exports.aliases = [];

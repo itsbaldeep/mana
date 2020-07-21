@@ -4,7 +4,7 @@ const Item = require("../models/Item");
 const Discord = require("discord.js");
 const { prefix, color } = require("../config.json");
 
-module.exports.cooldown = 3;
+module.exports.cooldown = 2;
 module.exports.description = "You can have a look at your whole inventory by using this command, that includes all your items and potions.";
 module.exports.usage = `${prefix}inventory (@mention)`;
 module.exports.aliases = ["inv"];

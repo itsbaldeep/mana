@@ -4,7 +4,7 @@ const User = require("../models/User");
 const Item = require("../models/Item");
 const { prefix, color } = require("../config.json");
 
-module.exports.cooldown = 5;
+module.exports.cooldown = 2;
 module.exports.description = "You can summon a pet using this command. You just need 2 arm bones, 2 leg bones, 1 chest bone and 1 skull in your inventory! Also make sure that you have enough scrolls if you want a legendary pet.";
 module.exports.usage = `${prefix}summon <pet name>`;
 module.exports.aliases = [];

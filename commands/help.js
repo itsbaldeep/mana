@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const { color } = require("../config.json");
 
-module.exports.cooldown = 3;
+module.exports.cooldown = 2;
 module.exports.aliases = [];
 
 module.exports.execute = (message, args, client) => {

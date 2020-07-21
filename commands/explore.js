@@ -4,9 +4,9 @@ const Item = require("../models/Item");
 const Potion = require("../models/Potion");
 const { prefix, color } = require("../config.json");
 const pickItem = require("../functions/pickitem");
-const { exploreExp, calculateExp, calculateMana } = require("../formulas");
+const { exploreExp, calculateExp, calculateMana, exploreMana } = require("../formulas");
 
-module.exports.cooldown = 16;
+module.exports.cooldown = 12;
 module.exports.description = "Exploring gives you a lot of experience and a guarantee to get either an item or a potion. Though you can't get any legendary item. It takes no mana at all!";
 module.exports.usage = `${prefix}explore`;
 module.exports.aliases = [];
@@ -23,8 +23,26 @@ module.exports.execute = async message => {
         items: user.items 
     };
 
+    // Checking minimum mana
+    const findRange = level => `${level - (level-1) % 5} - ${level - (level-1) % 5 + 4}`;
+    const range = findRange(user.level);
+    const mana = exploreMana(user.level);
+    if (user.mana[0] < mana) {
+        message.channel.send(new Discord.MessageEmbed()
+            .setColor("#ff0000")
+            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
+            .setTimestamp()
+            .addFields(
+                { name: `:mag: Exploration Level ${range}`, value: `You need atleast ${mana} mana points to explore in this level range`},
+                { name: ":name_badge: Unable to explore!", value: "You have insufficient mana to explore" },
+                { name: ":drop_of_blood: Replenish Mana", value: "Meditate or drink potions to replenish your mana!"},
+            )
+        );
+        return;
+    }
+
     // If drop is true, give bone, else potion
-    const drop = Math.random() < 0.7;
+    const drop = Math.random() < 0.5;
 
     let pot;
     let pick;
@@ -69,6 +87,9 @@ module.exports.execute = async message => {
         }
         if (!found) changes.potions.push([pot._id, 1]);
     }
+
+    // Handle mana
+    changes.mana[0] = changes.mana[0] - mana;
     
     // Handle experience
     const exp = exploreExp(user.level);
@@ -94,7 +115,8 @@ module.exports.execute = async message => {
         .setColor(color)
         .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
         .setTimestamp()
-        .addField(":earth_americas: Exploring finished!", `Gained ${exp} experience points`);
+        .addField(`:mag: Exploration Level ${range}`, `${mana} mana points are consumed`)
+        .addField(":earth_americas: Exploring finished", `Gained ${exp} experience points`);
 
     // Add field according to the drop rate
     if (!drop) embed.addField(":bento: Potion found!", pot.name);
@@ -102,13 +124,19 @@ module.exports.execute = async message => {
 
     // Add fields if user is levelled up
     if (lvlup) {
+        if ((user.level + 1) % 5 == 1)
+            embed.addField(`:palm_tree: Entered a new exploration level ${findRange(user.level)}`, `Exploring will now take ${mana} mana points!`)
         embed.addFields(
-            { name: ":star2: Level Up!", value: `${user.level} -> ${user.level + 1}` },
+            { name: ":star2: Level increased", value: `${user.level} -> ${user.level + 1}` },
             { name: ":sparkles: Maximum mana increased", value: `${oldMana} -> ${changes.mana[1]}` },
             { name: ":book: Current Experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`}
         );
     } else {
-        embed.addField(":book: Current Experience", user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`)
+        embed.addFields(
+            { name: ":book: Current Experience", value: user.experience[1] + ` (${calculateExp(user.experience[0], user.level)} for next level)`},
+            { name: ":droplet: Current Mana", value: user.mana[0] + "/" + user.mana[1]}
+        )
+        
     }
 
     // Updating user and sending message

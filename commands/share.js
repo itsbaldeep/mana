@@ -4,7 +4,7 @@ const Item = require("../models/Item");
 const Discord = require("discord.js");
 const { prefix, color } = require("../config.json");
 
-module.exports.cooldown = 10;
+module.exports.cooldown = 8;
 module.exports.description = "Feeling wholesome? You can share items or potions with your friend easily by using this command!";
 module.exports.usage = `${prefix}share @mention <quantity> <item/potion name>`;
 module.exports.aliases = [];

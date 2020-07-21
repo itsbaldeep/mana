@@ -7,7 +7,7 @@ const { prefix, color } = require("../config.json");
 
 const { calculateExp } = require("../formulas");
 
-module.exports.cooldown = 3;
+module.exports.cooldown = 2;
 module.exports.description = "Provides basic stats of your profile like your level and current experience and mana points, including a little peek at your items and potions, and also your pet!";
 module.exports.usage = `${prefix}profile (@mention)`;
 module.exports.aliases = [];
