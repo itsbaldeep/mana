@@ -91,6 +91,8 @@ module.exports.execute = async (message, args) => {
             { name: ":fire: Experience gained", value: `${gained} experience points` }
         )
     if (lvlup) {
+        if ((user.level + 1) % 5 == 1)
+            embed.addField(`:palm_tree: New exploration area ${findRange(user.level + 1)}`, `Exploring will now take ${exploreMana(user.level + 1)} mana points!`)
         embed.addFields(
             { name: ":star2: Level increased", value: `${user.level} -> ${user.level + 1}` },
             { name: ":sparkles: Maximum mana increased", value: `${oldMana} -> ${changes.mana[1]}` },
