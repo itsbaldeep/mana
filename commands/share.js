@@ -113,12 +113,12 @@ module.exports.execute = async (message, args) => {
         giverChanges.items[obj.index][1] = giverChanges.items[obj.index][1] - quantity;
         let found = false;
         for (let i = 0; i < takerChanges.items.length; i++) {
-            if (takerChanges.items[i][0] == thing._id.toString() && !found) {
+            if (takerChanges.items[i][0].toString() == thing._id.toString() && !found) {
                 found = true;
-                takerChanges.items[i][1] = takerChanges.items[i][1] + 1;
+                takerChanges.items[i][1] = takerChanges.items[i][1] + quantity;
             }
         }
-        if (!found) takerChanges.items.push([thing._id, 1]);
+        if (!found) takerChanges.items.push([thing._id, quantity]);
     }
 
     // Handling if it's a potion
@@ -126,12 +126,12 @@ module.exports.execute = async (message, args) => {
         giverChanges.potions[obj.index][1] = giverChanges.potions[obj.index][1] - quantity;
         let found = false;
         for (let i = 0; i < takerChanges.potions.length; i++) {
-            if (takerChanges.potions[i][0] == thing._id.toString() && !found) {
+            if (takerChanges.potions[i][0].toString() == thing._id.toString() && !found) {
                 found = true;
-                takerChanges.potions[i][1] = takerChanges.potions[i][1] + 1;
+                takerChanges.potions[i][1] = takerChanges.potions[i][1] + quantity;
             }
         }
-        if (!found) takerChanges.potions.push([thing._id, 1]);
+        if (!found) takerChanges.potions.push([thing._id, quantity]);
     }
 
     message.channel.send(new Discord.MessageEmbed()
