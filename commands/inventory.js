@@ -1,8 +1,8 @@
 const User = require("../models/User");
 const Potion = require("../models/Potion");
 const Item = require("../models/Item");
-const Discord = require("discord.js");
-const { prefix, color } = require("../config.json");
+const { prefix } = require("../config.json");
+const { negativeEmbed, positiveEmbed } = require("../functions/embed");
 
 module.exports.cooldown = 2;
 module.exports.description = "You can have a look at your whole inventory by using this command, that includes all your items and potions.";
@@ -16,20 +16,13 @@ module.exports.execute = async message => {
 
     // Validating if mentioned user exists
     if (!user) {
-        message.channel.send(new Discord.MessageEmbed()
-        .setColor(color.warning)
-        .addField(":name_badge: Unable to show inventory!", "The person has no profile and he/she needs to run a command first!")
-        .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-        .setTimestamp()
+        message.channel.send(negativeEmbed(author)
+            .addField(":name_badge: Unable to show inventory!", "The person has no profile and he/she needs to run a command first!")
         );
         return;
     }
 
-    const embed = new Discord.MessageEmbed()
-        .setColor(color.primary)
-        .setThumbnail(author.displayAvatarURL())
-        .setAuthor(author.username + "#" + author.discriminator, author.displayAvatarURL())
-        .setTimestamp();
+    const embed = positiveEmbed(author).setThumbnail(author.displayAvatarURL())
 
     // Potions
     const pots = [];

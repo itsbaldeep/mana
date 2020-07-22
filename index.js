@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 const User = require("./models/User");
 
 // Configuration files
-const { prefix, color } = require("./config.json");
+const { prefix } = require("./config.json");
+const { negativeEmbed } = require("./functions/embed");
 
 // Initializing client and commands and cooldowns and aliases
 const client = new Discord.Client();
@@ -47,10 +48,10 @@ client.on("message", async message => {
 	let command;
 	if (client.commands.has(cmd)) {
 		command = client.commands.get(cmd);
-	} else {
+	} else if (client.aliases.has(cmd)) {
 		command = client.commands.get(client.aliases.get(cmd));
 		cmd = client.aliases.get(cmd);
-	}
+	} else return;
 	
 	const id = message.author.id;
 
@@ -60,14 +61,11 @@ client.on("message", async message => {
 		let init = client.cooldowns.get(cmd).get(id);
 		let curr = new Date();
 		let diff = Math.ceil((curr-init)/1000);
-		message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
+		message.channel.send(negativeEmbed(message.author)
 			.addFields(
 				{ name: ":clock: Time left on cooldown", value: `${cd-diff + 1} second(s)` },
-				{ name: `:name_badge: Total cooldown on ${cmd}`, value: `${cd} seconds` }
+				{ name: `:name_badge: Total cooldown on ${cmd[0].toUpperCase() + cmd.slice(1)}`, value: `${cd} seconds` }
 			)
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
         );
 		return;
 	} else {

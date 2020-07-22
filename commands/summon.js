@@ -1,8 +1,8 @@
-const Discord = require("discord.js");
 const Pet = require("../models/Pet");
 const User = require("../models/User");
 const Item = require("../models/Item");
-const { prefix, color } = require("../config.json");
+const { prefix } = require("../config.json");
+const { negativeEmbed, positiveEmbed } = require("../functions/embed");
 
 module.exports.cooldown = 2;
 module.exports.description = "You can summon a pet using this command. You just need 2 arm bones, 2 leg bones, 1 chest bone and 1 skull in your inventory! Also make sure that you have enough scrolls if you want a legendary pet.";
@@ -12,15 +12,11 @@ module.exports.aliases = [];
 module.exports.execute = async (message, args) => {
     // Validating query
     let name = args.shift();
-    name = name.charAt(0).toUpperCase() + name.slice(1);
-    
+    name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
     const pet = await Pet.findOne({ name: name });
     if (!pet) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Unable to summon!", "Please pass a valid pet name!")
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Unable to summon", "Please pass a valid pet name")
         );
         return;
     }
@@ -38,11 +34,8 @@ module.exports.execute = async (message, args) => {
 
     // Checking if user already has pet
     if (user.pet) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Unable to summon!", `You already have a pet!`)
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Unable to summon", "You already have a pet")
         );
         return;
     }
@@ -70,22 +63,16 @@ module.exports.execute = async (message, args) => {
 
     // Check if user has all the bones and atleast 2 arm and legs
     if (bones.arm.quantity < 2 || bones.leg.quantity < 2 || bones.chest.quantity < 1 || bones.skull.quantity < 1) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Unable to summon!", `You don't have enough bones to summon ${name}!`)
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Unable to summon", `You don't have enough bones to summon ${name}`)
         );
         return;
     }
 
     // Checking for legendary pet
     if (pet.rarity == "Legendary" && (!scrolls.exists || scrolls.quantity < 3)) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Insufficient scrolls!", `You need 3 scrolls to summon a legendary pet, and you currently have ${scrolls.quantity}!`)
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Insufficient scrolls", `You need 3 scrolls to summon a legendary pet, and you currently have ${scrolls.quantity}`)
         );
         return;
     }
@@ -108,12 +95,8 @@ module.exports.execute = async (message, args) => {
 
     // Updating the user
     await User.updateOne({ id: message.author.id }, { $set: changes });
-
-    message.channel.send(new Discord.MessageEmbed()
-        .setColor(color.primary)
-        .addField(`:fire: ${pet.rarity} pet summoned!`, `You have succesfully summoned ${name}!`)
-        .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-        .setTimestamp()
+    message.channel.send(positiveEmbed(message.author)
+        .addField(`:fire: ${pet.rarity} pet summoned`, `You have succesfully summoned ${name}`)
     );
     return 1;
 

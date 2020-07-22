@@ -1,8 +1,10 @@
 const User = require("../models/User");
 const Potion = require("../models/Potion");
 const Item = require("../models/Item");
-const Discord = require("discord.js");
-const { prefix, color } = require("../config.json");
+const { prefix } = require("../config.json");
+
+const add = require("../functions/add");
+const { negativeEmbed, positiveEmbed } = require("../functions/embed");
 
 module.exports.cooldown = 8;
 module.exports.description = "Feeling wholesome? You can share items or potions with your friend easily by using this command!";
@@ -14,22 +16,16 @@ module.exports.execute = async (message, args) => {
 
     // Validating if a user is mentioned
     if (!mention) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Unable to share!", "Please mention a valid user!")
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Unable to share", "Please mention a valid user")
         );
         return;
     }
 
     // Verifying if it isn't a self mention
     if (mention.id == message.author.id) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Unable to share!", "You can't give items to yourself!")
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Unable to share", "You can't give items to yourself")
         );
         return;
     }
@@ -41,11 +37,8 @@ module.exports.execute = async (message, args) => {
 
     // Validating the quantity
     if (quantity == NaN || !name) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Unable to share!", "Please pass a valid number as quantity followed by name of the thing!")
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Unable to share", "Please pass a valid number as quantity followed by name of the thing")
         );
         return;
     }
@@ -55,11 +48,8 @@ module.exports.execute = async (message, args) => {
 
     // Validating if mentioned user exists
     if (!taker) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Unable to share!", "The person has no profile and he/she needs to run a command first!")
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Unable to share", "The person has no profile and he/she needs to run a command first")
         );
         return;
     }
@@ -72,45 +62,8 @@ module.exports.execute = async (message, args) => {
     
     // Validating if the thing actually exists or not
     if (!thing) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Unable to share!", "Please pass a valid item or potion name!")
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
-        );
-        return;
-    }
-
-    // Checking if user actually has that item
-    let found;
-    let obj = {};
-
-    // First checking items
-    giver.items.forEach((item, i) => {
-        if (!found && thing._id.toString() == item[0].toString() && item[1] >= quantity) {
-            found = true;
-            obj.name = name;
-            obj.item = true;
-            obj.index = i;
-        }
-    });
-
-    // Second checking potions
-    giver.potions.forEach((potion, i) => {
-        if (!found && thing._id.toString() == potion[0].toString()  && potion[1] >= quantity) {
-            found = true;
-            obj.name = name;
-            obj.potion = true;
-            obj.index = i;
-        }
-    });
-
-    if (!found) {
-        message.channel.send(new Discord.MessageEmbed()
-            .setColor(color.warning)
-            .addField(":name_badge: Unable to share!", "You don't have that much of that thing in your inventory!")
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Unable to share", "Please pass a valid item or potion name")
         );
         return;
     }
@@ -118,42 +71,39 @@ module.exports.execute = async (message, args) => {
     // Keeping track of changes
     const takerChanges = { items: taker.items, potions: taker.potions };
     const giverChanges = { items: giver.items, potions: giver.potions };
-
-    // Handling if it's an item
-    if (obj.item) {
-        giverChanges.items[obj.index][1] = giverChanges.items[obj.index][1] - quantity;
-        let found = false;
-        for (let i = 0; i < takerChanges.items.length; i++) {
-            if (takerChanges.items[i][0].toString() == thing._id.toString() && !found) {
-                found = true;
-                takerChanges.items[i][1] = takerChanges.items[i][1] + quantity;
-            }
+    
+    // Finding the item and trading
+    let found;
+    giver.items.forEach((item, i) => {
+        if (!found && thing._id.toString() == item[0].toString() && item[1] >= quantity) {
+            found = true;
+            giverChanges.items[i][1] = giverChanges.items[i][1] - quantity;
+            add(takerChanges.items, thing, quantity);
         }
-        if (!found) takerChanges.items.push([thing._id, quantity]);
-    }
-
-    // Handling if it's a potion
-    if (obj.potion) {
-        giverChanges.potions[obj.index][1] = giverChanges.potions[obj.index][1] - quantity;
-        let found = false;
-        for (let i = 0; i < takerChanges.potions.length; i++) {
-            if (takerChanges.potions[i][0].toString() == thing._id.toString() && !found) {
-                found = true;
-                takerChanges.potions[i][1] = takerChanges.potions[i][1] + quantity;
-            }
+    });
+    giver.potions.forEach((potion, i) => {
+        if (!found && thing._id.toString() == potion[0].toString()  && potion[1] >= quantity) {
+            found = true;
+            giverChanges.potions[i][1] = giverChanges.potions[i][1] - quantity;
+            add(takerChanges.potions, thing, quantity);
         }
-        if (!found) takerChanges.potions.push([thing._id, quantity]);
-    }
+    });
 
-    message.channel.send(new Discord.MessageEmbed()
-        .setColor(color.primary)
-        .addField(`:two_women_holding_hands: ${obj.potion ? "Potion" : "Item"} shared with ${mention.username}`, quantity + "x " + thing.name)
-        .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-        .setTimestamp()
-    );
+    // If not found
+    if (!found) {
+        message.channel.send(negativeEmbed(message.author)
+            .addField(":name_badge: Unable to share", "You don't have that much of that thing in your inventory")
+        );
+        return;
+    }
 
     // Updating here
     await User.updateOne({ id: mention.id }, { $set: takerChanges });
     await User.updateOne({ id: message.author.id }, { $set: giverChanges });
+
+    message.channel.send(positiveEmbed(message.author)
+        .addField(`:two_women_holding_hands: ${obj.potion ? "Potion" : "Item"} shared with ${mention.username}`, quantity + "x " + thing.name)
+    );
+
     return 1;
 }

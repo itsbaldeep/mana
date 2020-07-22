@@ -1,5 +1,4 @@
-const { MessageEmbed } = require("discord.js");
-const { color } = require("../config.json");
+const { positiveEmbed } = require("../functions/embed");
 
 module.exports.cooldown = 2;
 module.exports.aliases = [];
@@ -7,27 +6,20 @@ module.exports.aliases = [];
 module.exports.execute = (message, args, client) => {
     const cmd = args.shift();
     if (!cmd || cmd == "help" || !client.commands.has(cmd)) {
-        const embed = new MessageEmbed()
-            .setColor(color.primary)
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
         const cmds = []
         for (const command of client.commands.keys()) {
             if (command != "help") cmds.push(command);
         }
-        embed.addField(":bulb: Which command do you need help with?", cmds.join(", "))
-        message.channel.send(embed);
+        message.channel.send(positiveEmbed(message.author)
+            .addField(":bulb: Which command do you need help with?", cmds.join(", ")));
         return 1;
     }
     
     try {
         const command = client.commands.get(cmd);
-        const embed = new MessageEmbed()
-            .setColor(color.primary)
-            .setAuthor(message.author.username + "#" + message.author.discriminator, message.author.displayAvatarURL())
-            .setTimestamp()
+        const embed = positiveEmbed(message.author)
             .addFields(
-                { name: ":gear: " + cmd[0].toUpperCase() + cmd.slice(1) + " Command", value: command.description },
+                { name: ":gear: " + cmd[0].toUpperCase() + cmd.slice(1) + " command", value: command.description },
                 { name: ":alarm_clock: Cooldown", value: command.cooldown + " seconds" },
                 { name: ":eyeglasses: Usage", value: command.usage }
             )
