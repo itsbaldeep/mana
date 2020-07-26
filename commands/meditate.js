@@ -1,36 +1,42 @@
 const User = require("../models/User");
 const { prefix } = require("../config.json");
-const { replenishMana } = require("../functions/formulas");
-const { positiveEmbed, negativeEmbed } = require("../functions/embed");
+const { negative, positive } = require("../functions/embed");
 
-module.exports.cooldown = 32;
-module.exports.description = "You can meditate to replenish a large portion of your mana!";
+module.exports.cooldown = 16;
+module.exports.description = "Meditating allows you to replenish a large amount of your mana.";
 module.exports.usage = `${prefix}meditate`;
 module.exports.aliases = ["med"];
+module.exports.category = "Combat";
 
 module.exports.execute = async message => {
-    const user = await User.findOne({ id: message.author.id }).exec();
-    
+    const user = await User.findOne({ id: message.author.id });
+
     // Checking for max mana
-    if (user.mana[0] == user.mana[1]) {
-        message.channel.send(negativeEmbed(message.author)
-            .addField(":droplet: Maximum mana", `You already have maximum mana (${user.mana[0]}/${user.mana[1]})`)
+    if (user.mana.current == user.mana.limit) {
+        message.channel.send(negative(message.author)
+            .addField(":droplet: Maximum mana", `You already have maximum mana.`)
         );
         return;
     }
-    
-    // Replenishing mana
-    const changes = { mana: user.mana };
-    const initial = user.mana[0];
-    changes.mana[0] = Math.min(initial + replenishMana(user.level), changes.mana[1]);
 
-    await User.updateOne({ id: message.author.id }, { $set: changes }).exec();
-    message.channel.send(positiveEmbed(message.author)
+    // Keeping track of initial mana state
+    const init = user.mana.current;
+
+    // Calculating mana
+    const mana = Math.floor(Math.random() * user.level * 6 + 50) + user.level;
+
+    // Increasing mana
+    user.mana.current = Math.min(mana + user.mana.current, user.mana.limit);
+
+    // Sending message
+    message.channel.send(positive(message.author)
         .addFields(
-            { name: ":comet: Replenished mana", value: `${changes.mana[0] - initial} mana points`},
-            { name: ":droplet: Current mana", value: `${changes.mana[0]}/${changes.mana[1]}`}
+            { name: ":comet: Replenished mana", value: `${user.mana.current - init} mana points`},
+            { name: ":droplet: Current mana", value: `${user.mana.current}/${user.mana.limit}`}
         )
     );
-
+    
+    // Updating user
+    await User.updateOne({ id: message.author.id }, { $set: user });
     return 1;
-}
+};

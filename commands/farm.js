@@ -1,70 +1,80 @@
 const User = require("../models/User");
 const { prefix } = require("../config.json");
+const { negative, positive } = require("../functions/embed");
+const level = require("../functions/level");
+const get = require("../functions/get");
+const add = require("../functions/add");
 
-const pickItem = require("../functions/pickitem");
-const pickPotion = require("../functions/pickpot");
-const handleLevel = require("../functions/handlelevel");
-const add = require("../functions/add")
-const { calculateMobMana, calculateMobExp } = require("../functions/formulas");
-const { negativeEmbed, positiveEmbed } = require("../functions/embed");
-
-module.exports.cooldown = 2;
-module.exports.description = "By farming, you can get experience and you have a chance to get an item or a potion. This is the only way to get a legendary bone! It takes you mana, so make sure you have enough mana to farm.";
+module.exports.cooldown = 12;
+module.exports.description = "Farming allows you to farm magicules, a chance to get a potion and/or a fragment, it gives experience and also takes mana depending on how many monsters you encounter.";
 module.exports.usage = `${prefix}farm`;
 module.exports.aliases = [];
+module.exports.category = "Combat";
 
 module.exports.execute = async message => {
-    const user = await User.findOne({ id: message.author.id }).exec();
-    const max = 6;
+    const user = await User.findOne({ id: message.author.id });
+
+    // Calculating the percentages
+    const min = Math.round(12 - Math.log(user.level + 1));
+    const max = min * 4;
+    const perc = Math.round(Math.random() * (max - min + 1)) + min;
     
-    // Check for minimum mana
-    const m = calculateMobMana(user.level);
-    if (user.mana[0] < m * max) {
-        message.channel.send(negativeEmbed(message.author)
-            .addFields(
-                { name: ":name_badge: Unable to farm!", value: `You need atleast **${m * max} mana** to go farming!`},
-                { name: ":drop_of_blood: Replenish Mana", value: "Meditate or drink potions to replenish your mana!"}
-            )
+    // Checking minimum mana requirement
+    const req = Math.floor(user.mana.limit * max / 100);
+    if (user.mana.current < req) {
+        message.channel.send(negative(message.author)
+        .addFields(
+            { name: ":name_badge: Unable to farm", value: `You need ${req} mana points.`},
+            { name: ":drop_of_blood: Replenish mana", value: "Meditate or drink potions."}
+        )
         );
         return;
     }
 
-    // Spawn monsters
-    const n = Math.ceil(Math.random() * max);
-    const e = calculateMobExp(user.level);
+    // Calculating mana and experience
+    const exp = Math.floor(user.experience.limit * perc / 100);
+    const mana = Math.floor(user.mana.limit * perc / 100);
 
-    // Keep track of all changes
-    const changes = user;
-
-    const embed = positiveEmbed(message.author)
+    // Building a message
+    const embed = positive(message.author)
         .addFields(
-            { name: ":ghost: Farming done", value: `${n} monster(s) slayed while farming` },
-            { name: ":fire: Experience gained", value: `${e * n} experience points` }, 
-            { name: ":sweat_drops: Mana consumed", value: `${m * n} mana points` },
+            { name: ":ghost: Slayed monsters", value: `${exp} experience points` },
+            { name: ":sweat_drops: Mana consumed", value: `${mana} mana points` }
         );
-    // Taking mana
-    changes.mana[0] = changes.mana[0] - m * n;
 
-    // Giving experience
-    handleLevel(changes, e * n, embed);
+    // Taking away mana
+    user.mana.current -= mana;
 
-    // Item drop
-    if (Math.random() < 0.3) {
-        const pick = await pickItem();
-        add(changes.items, pick.item, 1);
-        embed.addField(`:skull_crossbones: ${pick.rarity} item found`, pick.item.name + " x1");
+    // Giving experience and handling level
+    level(user, exp, embed);
+    
+    // Keeping list of items
+    const items = [];
+
+    // Giving magicules to user
+    const magicules = Math.round(Math.random() * 30) + 10;
+    user.magicule += magicules;
+    items.push(`Magicules x${magicules}`);
+
+    // Giving fragment to user
+    if (Math.random() < 0.7) {
+        const frag = await get.frag();
+        add(1, frag._id, user.fragments);
+        items.push(`${frag.name} x1`);
     }
 
-    // Potion drop
+    // Giving fragment to user
     if (Math.random() < 0.3) {
-        const pot = await pickPotion();
-        add(changes.potions, pot, 1);
-        embed.addField(":bento: Potion found", pot.name + " x1");
+        const pot = await get.pot();
+        add(1, pot._id, user.potions);
+        items.push(`${pot.name} x1`);
     }
 
-    // Sending message and updating user
-    await User.updateOne({ id: message.author.id }, { $set: changes });
+    // Showing all items found in the message
+    embed.addField(":bento: Spoils of war", items.join("\n"));
+
+    // Updating user and sending message
+    await User.updateOne({ id: message.author.id }, { $set: user });
     message.channel.send(embed);
-
     return 1;
-}
+};

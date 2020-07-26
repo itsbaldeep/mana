@@ -2,27 +2,34 @@
 const Discord = require("discord.js");
 const fs = require("fs");
 const mongoose = require("mongoose");
-const User = require("./models/User");
 
-// Configuration files
+// Custom files
 const { prefix } = require("./config.json");
-const { negativeEmbed } = require("./functions/embed");
+const User = require("./models/User");
+const { negative } = require("./functions/embed");
 
-// Initializing client and commands and cooldowns and aliases
+// Initializing client
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
+client.categories = new Discord.Collection();
+
+// Reading all commands
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	const name = file.slice(0, -3);
-	client.cooldowns.set(name, new Map());
+
 	client.commands.set(name, command);
 	command.aliases.forEach(alias => {
 		client.aliases.set(alias, name);
 	})
+	client.cooldowns.set(name, new Map());
+	if (client.categories.has(command.category)) {
+		client.categories.set(command.category, client.categories.get(command.category) + "," + name);
+	} else client.categories.set(command.category, name);
 }
 
 // Connecting to Database
@@ -61,7 +68,7 @@ client.on("message", async message => {
 		let init = client.cooldowns.get(cmd).get(id);
 		let curr = new Date();
 		let diff = Math.ceil((curr-init)/1000);
-		message.channel.send(negativeEmbed(message.author)
+		message.channel.send(negative(message.author)
 			.addFields(
 				{ name: ":clock: Time left on cooldown", value: `${cd-diff + 1} second(s)` },
 				{ name: `:name_badge: Total cooldown on ${cmd[0].toUpperCase() + cmd.slice(1)}`, value: `${cd} seconds` }
@@ -74,26 +81,18 @@ client.on("message", async message => {
 	}
 
     try {
-		const user = await User.findOne({ id: id }).exec();
-		// New User
-		if (!user) {
-			const newUser = new User({
-				id: id,
-				level: 1,
-				experience: [0, 0],
-				mana: [70, 70],
-				potions: [],
-				pet: null,
-				status: [],
-				items: []
-			});
-			await newUser.save();
-		}
+		// Checking if user exists, otherwise making a new one
+		const user = await User.findOne({ id: id });
+		if (!user) await new User({ id: id }).save();
+
+		// Running the command
 		const code = await command.execute(message, args, client);
 		if (!code && client.cooldowns.get(cmd).has(id)) client.cooldowns.get(cmd).delete(id);
 	} catch (error) {
 		console.error(error);
-		message.reply("There was an error trying to execute that command!");
+		message.channel.send(negative(message.author)
+			.addField(":name_badge: Error", `There has been a technical error while running ${cmd[0].toUpperCase() + cmd.slice(1)} command, please contact **Cult#1317** asap!`)
+		);
 	}
 })
 

@@ -1,12 +1,66 @@
 const mongoose = require("mongoose");
 
 module.exports = mongoose.model("User", mongoose.Schema({
-    id: mongoose.Schema.Types.Number,
-    level: mongoose.Schema.Types.Number,
-    experience: mongoose.Schema.Types.Array,
-    mana: mongoose.Schema.Types.Array,
-    potions: mongoose.Schema.Types.Array,
-    pet: { type: mongoose.Schema.Types.ObjectId, ref: 'Pet' },
-    status: mongoose.Schema.Types.Array,
-    items: mongoose.Schema.Types.Array
+    id: Number,
+    level: {
+        type: Number,
+        default: 1
+    },
+    trials: {
+        type: Number,
+        default: 1
+    },
+    pet: { 
+        type: mongoose.Schema.Types.ObjectId,
+        default: null,
+        ref: "Pet"
+    },
+    magicule: {
+        type: Number,
+        default: 0
+    },
+    experience: {
+        current: {
+            type: Number,
+            default: 0
+        },
+        limit: {
+            type: Number,
+            default: 128
+        }
+    },
+    mana: {
+        current: {
+            type: Number,
+            default: 64
+        },
+        limit: {
+            type: Number,
+            default: 64
+        }
+    },
+    potions: {
+        type: Map,
+        of: Number,
+        default: new Map()
+    },
+    fragments: {
+        type: Map,
+        of: Number,
+        default: new Map()
+    },
+    buffs: {
+        type: Map,
+        of: {
+            active: {
+                type: Boolean,
+                default: false
+            },
+            proc: {
+                type: Number,
+                default: 0
+            }
+        },
+        default: new Map()
+    }
 }));

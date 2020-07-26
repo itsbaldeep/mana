@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 
 module.exports = mongoose.model("Pet", mongoose.Schema({
-    name: mongoose.Schema.Types.String,
-    rarity: mongoose.Schema.Types.String
+    _id: mongoose.Schema.Types.ObjectId,
+    name: String,
+    abilities: Number,
+    rarity: String,
+    type: String,
+    fragment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Fragment'
+    }
 }));

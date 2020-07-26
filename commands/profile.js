@@ -1,55 +1,51 @@
+const { prefix } = require("../config.json");
+const { positive, negative } = require("../functions/embed");
 const User = require("../models/User");
 const Pet = require("../models/Pet");
-const { prefix } = require("../config.json");
-
-const { calculateExp } = require("../functions/formulas");
-const { negativeEmbed, positiveEmbed } = require("../functions/embed");
 
 module.exports.cooldown = 2;
-module.exports.description = "Provides basic stats of your profile like your level and current experience and mana points, including a little peek at your items and potions, and also your pet!";
-module.exports.usage = `${prefix}profile (@mention)`;
+module.exports.description = "Shows the basic details of the user including level, trial level, pet name, magicule count, current experience level and mana level.";
+module.exports.usage = `${prefix}profile (@user)`;
 module.exports.aliases = [];
+module.exports.category = "Utility";
 
-module.exports.execute = async message => {
+module.exports.execute = async (message, args) => {
+    // Handling arguments
     const mention = message.mentions.users.first();
     const author = mention || message.author;
-    const user = await User.findOne({ id: author.id }).exec();
+    let user = await User.findOne({ id: author.id }).exec();
     
-    // Validating if mentioned user exists
+    // Checking if mentioned user doesn't have a profile
     if (!user) {
-        message.channel.send(negativeEmbed(author)
-            .addField(":name_badge: Unable to show profile!", "The person has no profile and he/she needs to run a command first!")
+        user = new User({ id: author.id });
+        await user.save();
+    }
+
+    // Checking if mentioned user is a bot
+    if (author.bot) {
+        message.channel.send(negative(author)
+            .addField(":name_badge: Unable to show profile", "Bots doesn't have a profile")
         );
         return;
     }
 
-    const embed = positiveEmbed(author)
+    // Showing basic info
+    const embed = positive(author)
         .setThumbnail(author.displayAvatarURL())
         .addFields(
-            { name: ":crossed_swords: Level", value: user.level },
-            { name: ":book: Experience", value: user.experience[1] + "/" + calculateExp(user.experience[0], user.level)},
-            { name: ":droplet: Mana", value: user.mana[0] + "/" + user.mana[1]},
+            { name: ":crossed_swords: Level", value: `**Combat level**: ${user.level}\n**Trial level**: ${user.trials}` },
+            { name: ":book: Experience", value: `${user.experience.current}/${user.experience.limit}` },
+            { name: ":droplet: Mana", value: `${user.mana.current}/${user.mana.limit}` },
+            { name: ":gem: Magicules", value: `${user.magicule} magicules` }
     );
 
     // Check for pet
     if (user.pet) {
         const pet = await Pet.findOne({ _id: user.pet });
-        embed.addField(":raccoon: Pet", pet.name);
+        embed.addField(`:raccoon: ${pet.rarity} Pet`, `**Name**: ${pet.name}\n**Type**: ${pet.type}\n**Buffs**: ${pet.abilities} active abilities`);
     }
 
-    const length = {items: 0, potions: 0}
-    if (user.items.length > 0)
-        length.items = user.items.filter(i => i[1] > 0).length;
-    if (user.potions.length > 0)
-        length.potions = user.potions.filter(p => p[1] > 0).length;
-
-    if (length.items > 0 || length.potions > 0) {
-        const text = [ 
-            length.items ? `${length.items} item(s)` : null, 
-            length.potions ? `${length.potions} potion(s)` : null
-        ].filter(n => n != null).join(" and ");
-        embed.addField(":toolbox: Inventory", text);
-    }
+    // Send message
     message.channel.send(embed);
     return 1;
-}
+};

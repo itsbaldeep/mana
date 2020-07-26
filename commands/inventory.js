@@ -1,66 +1,60 @@
 const User = require("../models/User");
+const Fragment = require("../models/Fragment");
 const Potion = require("../models/Potion");
-const Item = require("../models/Item");
 const { prefix } = require("../config.json");
-const { negativeEmbed, positiveEmbed } = require("../functions/embed");
+const { positive, negative } = require("../functions/embed");
 
 module.exports.cooldown = 2;
-module.exports.description = "You can have a look at your whole inventory by using this command, that includes all your items and potions.";
-module.exports.usage = `${prefix}inventory (@mention)`;
+module.exports.description = "It shows total amount of user's potions, fragments and magicules.";
+module.exports.usage = `${prefix}inventory (@user)`;
 module.exports.aliases = ["inv"];
+module.exports.category = "Utility";
 
-module.exports.execute = async message => {
+module.exports.execute = async (message, args) => {
+    // Handling arguments
     const mention = message.mentions.users.first();
     const author = mention || message.author;
-    const user = await User.findOne({ id: author.id }).exec();
-
-    // Validating if mentioned user exists
+    let user = await User.findOne({ id: author.id }).exec();
+    
+    // Checking if mentioned user doesn't have a profile
     if (!user) {
-        message.channel.send(negativeEmbed(author)
-            .addField(":name_badge: Unable to show inventory!", "The person has no profile and he/she needs to run a command first!")
+        user = new User({ id: author.id });
+        await user.save();
+    }
+
+    // Checking if mentioned user is a bot
+    if (author.bot) {
+        message.channel.send(negative(author)
+            .addField(":name_badge: Unable to show inventory", "Bots doesn't have a profile")
         );
         return;
     }
 
-    const embed = positiveEmbed(author).setThumbnail(author.displayAvatarURL())
+    // Building a message
+    const embed = positive(author).setThumbnail(author.displayAvatarURL());
 
-    // Potions
+    // Keeping track of all potions and fragments
     const pots = [];
-    if (user.potions.length > 0) {
-        const reqs = [];
-        user.potions.forEach(potion => {
-            const req = Potion.findOne({ _id: potion[0] });
-            reqs.push(req);
-        });
-        const inv = await Promise.all(reqs);
-        inv.forEach((pot, i) => {
-            const quantity = user.potions[i][1];
-            if (quantity > 0) {
-                pots.push(`${pot.name} x${quantity}`);
-            }
-        });
+    const frags = [];
+
+    // Looping through potions
+    for (const id of user.potions.keys()) {
+        const pot = await Potion.findOne({ _id: id });
+        pots.push(`${pot.name} x${user.potions.get(id)}`);
     }
 
-    // Items
-    const items = [];
-    if (user.items.length > 0) {
-        const reqs = [];
-        user.items.forEach(item => {
-            const req = Item.findOne({ _id: item[0] });
-            reqs.push(req);
-        });
-        const inv = await Promise.all(reqs);
-        inv.forEach((item, i) => {
-            const quantity = user.items[i][1];
-            if (quantity > 0) {
-                items.push(`${item.name} x${quantity}`);
-            }
-        });
+    // Looping through fragments
+    for (const id of user.fragments.keys()) {
+        const frag = await Fragment.findOne({ _id: id });
+        frags.push(`${frag.name} x${user.fragments.get(id)}`);
     }
 
-    embed.addField(":toolbox: Potions", pots.length > 0 ? pots.sort().join('\n') : "Empty");
-    embed.addField(":briefcase: Items", items.length > 0 ? items.sort().join('\n') : "Empty");
+    // Adding the fields
+    if (user.magicule > 0) embed.addField(":gem: Magicules", `${user.magicule} magicules`);
+    embed.addField(":champagne_glass: Potions", pots.length > 0 ? pots.sort().join('\n') : "Empty");
+    embed.addField(":game_die: Fragments", frags.length > 0 ? frags.sort().join('\n') : "Empty");
 
+    // Sending the message  
     message.channel.send(embed);
     return 1;
-}
+};
