@@ -24,7 +24,7 @@ module.exports.execute = async (message, args) => {
     // Checking if mentioned user is a bot
     if (author.bot) {
         message.channel.send(negative(author)
-            .addField(":name_badge: Unable to show profile", "Bots doesn't have a profile")
+            .addField(":name_badge: Unable to show profile", "Bots doesn't have a profile.")
         );
         return;
     }
@@ -42,7 +42,7 @@ module.exports.execute = async (message, args) => {
     // Check for pet
     if (user.pet) {
         const pet = await Pet.findOne({ _id: user.pet });
-        embed.addField(`:raccoon: ${pet.rarity} Pet`, `**Name**: ${pet.name}\n**Type**: ${pet.type}\n**Buffs**: ${pet.abilities} active abilities`);
+        embed.addField(`:raccoon: ${pet.rarity} Pet`, `${pet.name} (${pet.type} Type)`);
     }
 
     // Send message

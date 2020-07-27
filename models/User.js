@@ -51,16 +51,7 @@ module.exports = mongoose.model("User", mongoose.Schema({
     },
     buffs: {
         type: Map,
-        of: {
-            active: {
-                type: Boolean,
-                default: false
-            },
-            proc: {
-                type: Number,
-                default: 0
-            }
-        },
+        of: Number,
         default: new Map()
     }
 }));

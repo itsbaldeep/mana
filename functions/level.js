@@ -21,7 +21,7 @@ module.exports = (user, exp, embed) => {
     else user.experience.current = total;
 
     // Give these info anyways
-    embed.addField(":book: Experience", `${user.experience.current}/${user.experience.limit}`);
-    embed.addField(":droplet: Mana", `${user.mana.current}/${user.mana.limit}`);
+    embed.addField(":book: Current experience", `${user.experience.current}/${user.experience.limit}`);
+    embed.addField(":droplet: Current mana", `${user.mana.current}/${user.mana.limit}`);
 
 }

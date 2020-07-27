@@ -25,7 +25,7 @@ module.exports.execute = async message => {
     // Calculating mana
     const mana = Math.floor(Math.random() * user.level * 6 + 50) + user.level;
 
-    // Increasing mana
+    // Replenishing mana
     user.mana.current = Math.min(mana + user.mana.current, user.mana.limit);
 
     // Sending message

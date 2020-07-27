@@ -25,7 +25,7 @@ module.exports.execute = async (message, args) => {
     // Checking if mentioned user is a bot
     if (author.bot) {
         message.channel.send(negative(author)
-            .addField(":name_badge: Unable to show inventory", "Bots doesn't have a profile")
+            .addField(":name_badge: Unable to show inventory", "Bots doesn't have a profile.")
         );
         return;
     }
@@ -51,8 +51,8 @@ module.exports.execute = async (message, args) => {
 
     // Adding the fields
     if (user.magicule > 0) embed.addField(":gem: Magicules", `${user.magicule} magicules`);
-    embed.addField(":champagne_glass: Potions", pots.length > 0 ? pots.sort().join('\n') : "Empty");
-    embed.addField(":game_die: Fragments", frags.length > 0 ? frags.sort().join('\n') : "Empty");
+    embed.addField(":champagne_glass: Potions", pots.length > 0 ? pots.join('\n') : "Empty");
+    embed.addField(":game_die: Fragments", frags.length > 0 ? frags.join('\n') : "Empty");
 
     // Sending the message  
     message.channel.send(embed);
