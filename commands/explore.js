@@ -2,7 +2,7 @@ const User = require("../models/User");
 const { prefix } = require("../config.json");
 const { negative, positive } = require("../functions/embed");
 const curve = require("../functions/curve");
-const level = require("../functions/level");
+const handle = require("../functions/handle");
 const get = require("../functions/get");
 const add = require("../functions/add");
 
@@ -33,17 +33,10 @@ module.exports.execute = async message => {
     const exp = Math.floor(user.experience.limit * perc / 100);
 
     // Building a message
-    const embed = positive(message.author)
-        .addFields(
-            { name: ":earth_americas: Exploration done", value: `${exp} experience points` },
-            { name: ":sweat_drops: Mana consumed", value: `${mana} mana points` }
-        );
+    const embed = positive(message.author);
 
-    // Taking away mana
-    user.mana.current -= mana;
-
-    // Adding experience
-    level(user, exp, embed);
+    // Adding experience and taking mana
+    handle(user, exp, mana, embed);
 
     // Handling items
     if (Math.random() < 0.5) {

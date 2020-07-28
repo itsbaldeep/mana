@@ -4,6 +4,7 @@ const Fragment = require("../models/Fragment");
 const { prefix } = require("../config.json");
 const { negative, positive } = require("../functions/embed");
 const add = require("../functions/add");
+const handle = require("../functions/handle.js");
 
 module.exports.cooldown = 2;
 module.exports.description = "Trials are level-based tests of your power, they take a large amounts of mana directly related to the trial level and give better better reward each time as well as potions and fragments.";
@@ -28,7 +29,7 @@ module.exports.execute = async message => {
     }
 
     // Giving magicules
-    const magicule = user.trials * 25;
+    const magicule = user.trials * 10;
     user.magicule += magicule;
 
     // Taking mana
@@ -37,8 +38,7 @@ module.exports.execute = async message => {
     // Building message
     const embed = positive(message.author)
         .addFields(
-            { name: `:shield: Trial ${user.trials} done`, value: `${mana} mana points` },
-            { name: ":droplet: Current mana", value: `${user.mana.current}/${user.mana.limit}` },
+            { name: `:shield: Trial ${user.trials} done`, value: `**Consumed**: ${mana} mana points\n**Current**: ${user.mana.current}/${user.mana.limit}` },
             { name: ":gem: Magicules rewarded", value: `${magicule} magicules` }
         );
 

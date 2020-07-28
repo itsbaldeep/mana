@@ -3,8 +3,8 @@ const Pet = require("../models/Pet");
 const Fragment = require("../models/Fragment");
 const { prefix } = require("../config.json");
 const { negative, positive } = require("../functions/embed");
+const remove = require("../functions/remove");
 const buffs = require("../functions/buffs");
-const Buff = require("../models/Buff");
 
 module.exports.cooldown = 4;
 module.exports.description = "Given enough magicules and fragments, you can use this command to tame a random pet of the respective rarity that you wish to get.";
@@ -36,13 +36,13 @@ module.exports.execute = async (message, args) => {
 
     // Getting user and validating the requirements
     const user = await User.findOne({ id: message.author.id });
-    const fragcount = user.fragments.get(frag._id.toString()) || 0;
-    if (user.magicule < req.magicule || fragcount < req.fragment) {
+    const count = user.fragments.get(frag._id.toString()) || 0;
+    if (user.magicule < req.magicule || count < req.fragment) {
         message.channel.send(negative(message.author)
             .addFields(
                 { name: ":name_badge: Unable to tame", value: "You don't have enough resources."},
                 { name: ":notepad_spiral: Requirements", value: `${req.magicule} magicules and ${req.fragment} ${fragname}s.` },
-                { name: ":person_frowning_tone1: Your resources", value: `${user.magicule} magicules and ${fragcount} ${fragname}s.` }
+                { name: ":person_frowning_tone1: Your resources", value: `${user.magicule} magicules and ${count} ${fragname}s.` }
             )
         );
         return;
@@ -55,10 +55,7 @@ module.exports.execute = async (message, args) => {
     
     // Taking away fragments and magicules
     user.magicule -= req.magicule;
-    const fid = frag._id.toString();
-    if (fragcount - req.fragment == 0) {
-        user.fragments.delete(fid);
-    } else user.fragments.set(fid, user.fragments.get(fid) - req.fragment);
+    remove(req.fragment, frag._id, user.fragments);
 
     // Building message
     const embed = positive(message.author)

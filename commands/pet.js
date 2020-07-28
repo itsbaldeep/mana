@@ -2,7 +2,6 @@ const { prefix } = require("../config.json");
 const { positive, negative } = require("../functions/embed");
 const User = require("../models/User");
 const Pet = require("../models/Pet");
-const Buff = require("../models/Buff");
 
 module.exports.cooldown = 6;
 module.exports.description = "Shows details about your pet which includes all the active abilities and their proc rates.";
@@ -10,7 +9,7 @@ module.exports.usage = `${prefix}pet (@user)`;
 module.exports.aliases = [];
 module.exports.category = "Pet";
 
-module.exports.execute = async (message, args) => {
+module.exports.execute = async message => {
     // Handling arguments
     const mention = message.mentions.users.first();
     const author = mention || message.author;
@@ -41,10 +40,8 @@ module.exports.execute = async (message, args) => {
     // Getting pet and buffs
     const pet = await Pet.findOne({ _id: user.pet });
     const buffs = [];
-    for (const id of user.buffs.keys()) {
-        const buff = await Buff.findOne({ _id: id });
-        buffs.push(`${buff.name} -> ${user.buffs.get(id)}%`);
-    }
+    for (const entry of user.buffs.entries())
+        buffs.push(`${entry[0]} -> ${entry[1]}`);
 
     // Message
     const embed = positive(author)

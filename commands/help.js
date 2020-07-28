@@ -14,8 +14,9 @@ module.exports.execute = (message, args, client) => {
         }
         const msg = positive(message.author);
         const emotes = { Pet: ":dog:", Utility: ":gear:", Combat: ":crossed_swords:", Craft: ":cooking:" };
-        for (const category of client.categories.keys()) {
-            msg.addField(`${emotes[category]} ${category} commands`, client.categories.get(category));
+        
+        for (const entry of client.categories.entries()) {
+            msg.addField(`${emotes[entry[0]]} ${entry[0]} commands`, entry[1].split(",").join(", "));
         }
         message.channel.send(msg);
         return 1;

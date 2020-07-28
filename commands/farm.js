@@ -2,7 +2,7 @@ const User = require("../models/User");
 const { prefix } = require("../config.json");
 const { negative, positive } = require("../functions/embed");
 const curve = require("../functions/curve");
-const level = require("../functions/level");
+const handle = require("../functions/handle");
 const get = require("../functions/get");
 const add = require("../functions/add");
 
@@ -34,17 +34,10 @@ module.exports.execute = async message => {
     const exp = Math.floor(user.experience.limit * perc / 100);
 
     // Building a message
-    const embed = positive(message.author)
-        .addFields(
-            { name: ":fire: Monsters slayed", value: `${exp} experience points` },
-            { name: ":sweat_drops: Mana consumed", value: `${mana} mana points` }
-        );
+    const embed = positive(message.author);
 
-    // Taking away mana
-    user.mana.current -= mana;
-
-    // Giving experience and handling level
-    level(user, exp, embed);
+    // Giving experience and taking mana
+    handle(user, exp, mana, embed);
     
     // Keeping list of items
     const items = [];
@@ -52,24 +45,28 @@ module.exports.execute = async message => {
     // Giving magicules to user
     const magicules = Math.round(Math.random() * 30) + 10;
     user.magicule += magicules;
-    items.push(`:gem: Magicules x${magicules}`);
+    embed.addField(
+        ":gem: Magicules",
+        `**Found**: ${magicules}
+        **Current**: ${user.magicule}`
+    );
 
     // Giving fragment to user
     if (Math.random() < 0.4) {
         const frag = await get.frag();
         add(1, frag._id, user.fragments);
-        items.push(`:game_die: ${frag.name} x1`);
+        items.push(`${frag.name}`);
     }
 
     // Giving fragment to user
     if (Math.random() < 0.3) {
         const pot = await get.pot();
         add(1, pot._id, user.potions);
-        items.push(`:wine_glass: ${pot.name} x1`);
+        items.push(`${pot.name}`);
     }
 
     // Showing all items found in the message
-    embed.addField(":bento: Spoils of war", items.join("\n"));
+    if (items.length > 0) embed.addField(":bento: Drops", items.join("\n"));
 
     // Updating user and sending message
     await User.updateOne({ id: message.author.id }, { $set: user });

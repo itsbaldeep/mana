@@ -13,12 +13,12 @@ module.exports.category = "Combat";
 module.exports.execute = async (message, args) => {
     // Getting the potion from arguments
     const name = args.map(a => a[0].toUpperCase() + a.slice(1)).join(" ");
-    let pot = await Potion.findOne({ name: name }) || await Potion.findOne({ name: name + " Potion"});
+    const pot = await Potion.findOne({ name: name }) || await Potion.findOne({ name: name + " Potion"});
 
     // Validating the argument
     if (!pot) {
         message.channel.send(negative(message.author)
-            .addField(":name_badge: Unable to drink", "Please pass a valid potion name")
+            .addField(":name_badge: Unable to drink", "Please pass a valid potion name.")
         );
         return;
     }
@@ -27,7 +27,7 @@ module.exports.execute = async (message, args) => {
     const user = await User.findOne({ id: message.author.id });
     if (!user.potions.has(pot._id.toString())) {
         message.channel.send(negative(message.author)
-            .addField(":name_badge: Unable to drink", "You don't have that potion in your inventory")
+            .addField(":name_badge: Unable to drink", "You don't have that potion in your inventory.")
         );
         return;
     }
@@ -44,9 +44,10 @@ module.exports.execute = async (message, args) => {
 
     // Sending message
     message.channel.send(positive(message.author)
-        .addFields(
-            { name: ":comet: Replenished mana", value: `${user.mana.current - init} mana points`},
-            { name: ":droplet: Current mana", value: `${user.mana.current}/${user.mana.limit}`}
+        .addField(
+            `:beers: Drank ${pot.name}`,
+            `**Replenished**: ${user.mana.current - init} mana points
+            **Current**: ${user.mana.current}/${user.mana.limit}`
         )
     );
     

@@ -23,16 +23,17 @@ module.exports.execute = async message => {
     const init = user.mana.current;
 
     // Calculating mana
-    const mana = Math.floor(Math.random() * user.level * 6 + 50) + user.level;
+    const mana = Math.floor(user.trials * 25);
 
     // Replenishing mana
     user.mana.current = Math.min(mana + user.mana.current, user.mana.limit);
 
     // Sending message
     message.channel.send(positive(message.author)
-        .addFields(
-            { name: ":comet: Replenished mana", value: `${user.mana.current - init} mana points`},
-            { name: ":droplet: Current mana", value: `${user.mana.current}/${user.mana.limit}`}
+        .addField(
+            ":comet: Meditation done",
+            `**Replenished**: ${user.mana.current - init} mana points
+            **Current**: ${user.mana.current}/${user.mana.limit}`
         )
     );
     

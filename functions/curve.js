@@ -1,1 +1,1 @@
-module.exports = level => Math.round(12 - Math.log(level + 1));
+module.exports = level => 80 / (level + 3);

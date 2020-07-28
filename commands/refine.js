@@ -1,6 +1,5 @@
 const { prefix } = require("../config.json");
 const User = require("../models/User");
-const Buff = require("../models/Buff");
 const Pet = require("../models/Pet");
 const { negative, positive } = require("../functions/embed");
 const buffs = require("../functions/buffs");
@@ -38,12 +37,10 @@ module.exports.execute = async message => {
         return;
     }
 
-    // Getting user's buffs
+    // Getting buffs
     const current = [];
-    for (const id of user.buffs.keys()) {
-        const buff = await Buff.findOne({ _id: id });
-        current.push(`${buff.name} -> ${user.buffs.get(id)}%`);
-    }
+    for (const entry of user.buffs.entries())
+        current.push(`${entry[0]} -> ${entry[1]}`);
 
     // Building message
     const embed = positive(message.author)
