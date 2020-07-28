@@ -10,7 +10,7 @@ module.exports.usage = `${prefix}inventory (@user)`;
 module.exports.aliases = ["inv"];
 module.exports.category = "Utility";
 
-module.exports.execute = async (message, args) => {
+module.exports.execute = async message => {
     // Handling arguments
     const mention = message.mentions.users.first();
     const author = mention || message.author;

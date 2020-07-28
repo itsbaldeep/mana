@@ -47,8 +47,7 @@ module.exports.execute = async message => {
     user.magicule += magicules;
     embed.addField(
         ":gem: Magicules",
-        `**Found**: ${magicules}
-        **Current**: ${user.magicule}`
+        `**Found**: ${magicules}\n**Current**: ${user.magicule}`
     );
 
     // Giving fragment to user

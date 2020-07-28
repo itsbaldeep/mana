@@ -32,6 +32,14 @@ module.exports.execute = async (message, args) => {
         return;
     }
 
+    // Checking for max mana
+    if (user.mana.current == user.mana.limit) {
+        message.channel.send(negative(message.author)
+            .addField(":droplet: Maximum mana", `You already have maximum mana.`)
+        );
+        return;
+    }
+
     // Keeping track of initial mana state
     const init = user.mana.current;
 
@@ -46,8 +54,7 @@ module.exports.execute = async (message, args) => {
     message.channel.send(positive(message.author)
         .addField(
             `:beers: Drank ${pot.name}`,
-            `**Replenished**: ${user.mana.current - init} mana points
-            **Current**: ${user.mana.current}/${user.mana.limit}`
+            `**Replenished**: ${user.mana.current - init} mana points\n**Current**: ${user.mana.current}/${user.mana.limit}`
         )
     );
     

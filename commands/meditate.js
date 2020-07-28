@@ -32,8 +32,7 @@ module.exports.execute = async message => {
     message.channel.send(positive(message.author)
         .addField(
             ":comet: Meditation done",
-            `**Replenished**: ${user.mana.current - init} mana points
-            **Current**: ${user.mana.current}/${user.mana.limit}`
+            `**Replenished**: ${user.mana.current - init} mana points\n**Current**: ${user.mana.current}/${user.mana.limit}`
         )
     );
     

@@ -60,15 +60,13 @@ module.exports = (user, exp, mana, embed) => {
     // Experience Info
     embed.addField(
         ":fire: Experience",
-        `**Gained**: ${exp} ${lucky ? `(+${bonus}) ` : ""}points
-        **Current**: ${user.experience.current}/${user.experience.limit}`
+        `**Gained**: ${exp} ${lucky ? `(+${bonus}) ` : ""}points\n**Current**: ${user.experience.current}/${user.experience.limit}`
     );
 
     // Mana Info
     embed.addField(
         ":tropical_drink: Mana",
-        `**Consumed**: ${revert ? "Mana reverted" : `${mana} ${grace ? `(-${reduction}) ` : ""}points`}
-        **Current**: ${user.mana.current}/${user.mana.limit}${recover ? " (Dew recovery)" : ""}`
+        `**Consumed**: ${revert ? "Mana reverted" : `${mana} ${grace ? `(-${reduction}) ` : ""}points`}\n**Current**: ${user.mana.current}/${user.mana.limit}${recover ? " (Dew recovery)" : ""}`
     );
 
 }
