@@ -66,7 +66,7 @@ module.exports = (user, exp, mana, embed) => {
     // Mana Info
     embed.addField(
         ":tropical_drink: Mana",
-        `**Consumed**: ${revert ? "Mana reverted" : `${mana} ${grace ? `(-${reduction}) ` : ""}points`}\n**Current**: ${user.mana.current}/${user.mana.limit}${recover ? " (Dew recovery)" : ""}`
+        `**Consumed**: ${revert ? "Reverted" : `${mana} ${grace ? `(-${reduction}) ` : ""}points`}\n**Current**: ${user.mana.current}/${user.mana.limit}${recover ? " (Dew)" : ""}`
     );
 
 }
