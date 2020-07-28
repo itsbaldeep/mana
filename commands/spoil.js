@@ -51,7 +51,7 @@ module.exports.execute = async (message, args) => {
     message.channel.send(positive(message.author)
         .addFields(
             { name: `:ring: Spoiled succesfully`, value: `**Gained**: ${pot.worth * quantity} magicules\n**Total**: ${user.magicule} magicules` },
-            { name: ":pencil: Details", value: ` ${pot.worth} magicule each \n${quantity} ${pot.name}(s) spoiled` },
+            { name: ":pencil: Details", value: `**Spoiled**: ${quantity} ${pot.name}\n**Worth**: ${pot.worth} magicule each` },
         )
     );
     return 1;

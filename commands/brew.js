@@ -58,9 +58,7 @@ module.exports.execute = async (message, args) => {
     // Updating user and sending message
     await User.updateOne({ id: message.author.id }, { $set: user });
     message.channel.send(positive(message.author)
-        .addField(":beer: Brewed succesfully",
-        `**Brewed**: ${quantity} ${brewed.name}(s)\n**Spoiled**: ${req.quantity} ${req.name}(s)`
-        )
+        .addField(":beer: Brewed succesfully", `**Brewed**: ${quantity} ${brewed.name}(s)\n**Spoiled**: ${req.quantity} ${req.name}`)
     );
     return 1;
 
