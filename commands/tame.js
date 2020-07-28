@@ -13,8 +13,17 @@ module.exports.aliases = [];
 module.exports.category = "Pet";
 
 module.exports.execute = async (message, args) => {
-    // Getting the rarity and corresponding fragment from argument
+    
+    // Validating if arguments exist
     const arg = args.shift();
+    if (!arg) {
+        message.channel.send(negative(message.author)
+            .addField(":name_badge: No arguments found", "Please pass a rarity.")
+        );
+        return;
+    }
+
+    // Getting the rarity and corresponding fragment from argument
     const rarity = arg[0].toUpperCase() + arg.slice(1);
     const fragname = rarity + " Fragment";
 
