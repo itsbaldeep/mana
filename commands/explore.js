@@ -29,7 +29,7 @@ module.exports.execute = async message => {
     }
 
     // Handling experience gained
-    const perc = 3 * curve(user.level);
+    const perc = curve(user.level);
     const exp = Math.floor(user.experience.limit * perc / 100);
 
     // Building a message

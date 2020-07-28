@@ -50,9 +50,8 @@ module.exports.execute = async (message, args) => {
     await User.updateOne({ id: message.author.id }, { $set: user });
     message.channel.send(positive(message.author)
         .addFields(
-            { name: `:ring: Defused succesfully`, value: `**Gained**: ${frag.worth * quantity} magicules\n**Current**: ${user.magicule} magicules` },
+            { name: `:ring: Defused succesfully`, value: `**Gained**: ${frag.worth * quantity} magicules\n**Total**: ${user.magicule} magicules` },
             { name: ":pencil: Details", value: ` ${frag.worth} magicule each \n${quantity} ${frag.name}(s) defused` },
-            { name: ":gem: Magicules", value: `${user.magicule} magicules` }
         )
     );
     return 1;

@@ -29,7 +29,7 @@ module.exports.execute = async message => {
     }
 
     // Calculating experience
-    const max = min * 4;
+    const max = min * 2;
     const perc = Math.round(Math.random() * (max - min + 1)) + min;
     const exp = Math.floor(user.experience.limit * perc / 100);
 
@@ -45,10 +45,7 @@ module.exports.execute = async message => {
     // Giving magicules to user
     const magicules = Math.round(Math.random() * 30) + 10;
     user.magicule += magicules;
-    embed.addField(
-        ":gem: Magicules",
-        `**Found**: ${magicules}\n**Current**: ${user.magicule}`
-    );
+    embed.addField(":gem: Magicules", `**Found**: ${magicules}\n**Total**: ${user.magicule}`);
 
     // Giving fragment to user
     if (Math.random() < 0.4) {

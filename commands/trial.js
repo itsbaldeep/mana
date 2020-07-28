@@ -39,7 +39,8 @@ module.exports.execute = async message => {
     const embed = positive(message.author)
         .addFields(
             { name: `:shield: Trial ${user.trials} done`, value: `**Consumed**: ${mana} mana points\n**Current**: ${user.mana.current}/${user.mana.limit}` },
-            { name: ":gem: Magicules rewarded", value: `${magicule} magicules` }
+            { name: ":gem: Magicules", value: `**Found**: ${magicules}\n**Total**: ${user.magicule}` }
+        
         );
 
     // Getting the items
