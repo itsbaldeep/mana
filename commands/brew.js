@@ -43,7 +43,7 @@ module.exports.execute = async (message, args) => {
     // Getting user and validating quantity
     const pot = await Potion.findOne({ name: req.name });
     const user = await User.findOne({ id: message.author.id });
-    if (!user.potions.has(pot._id.toString()) || user.potions.get(pot._id.toString()) < quantity) {
+    if (!user.potions.has(pot._id.toString()) || user.potions.get(pot._id.toString()) < req.quantity) {
         message.channel.send(negative(message.author)
             .addField(":name_badge: Unable to brew", `You need atleast ${req.quantity} ${req.name}s to brew ${quantity} ${name}(s).`)
         );
