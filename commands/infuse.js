@@ -43,7 +43,7 @@ module.exports.execute = async (message, args) => {
     // Getting user and validating quantity
     const frag = await Fragment.findOne({ name: req.name });
     const user = await User.findOne({ id: message.author.id });
-    if (!user.fragments.has(frag._id.toString()) || user.fragments.get(frag._id.toString()) < quantity) {
+    if (!user.fragments.has(frag._id.toString()) || user.fragments.get(frag._id.toString()) < req.quantity) {
         message.channel.send(negative(message.author)
             .addField(":name_badge: Unable to infuse", `You need atleast ${req.quantity} ${req.name}s to infuse ${quantity} ${name}(s).`)
         );
