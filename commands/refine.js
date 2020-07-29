@@ -50,7 +50,7 @@ module.exports.execute = async message => {
         );
     
     // Taking magicules and getting new buffs
-    user.magicules -= req;
+    user.magicule -= req;
     await buffs(user.buffs, pet.abilities, embed);
 
     // Updating user and sending message
