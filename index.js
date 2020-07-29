@@ -28,7 +28,7 @@ for (const file of commandFiles) {
 	})
 	client.cooldowns.set(name, new Map());
 	if (client.categories.has(command.category)) {
-		client.categories.set(command.category, client.categories.get(command.category) + "," + name);
+		client.categories.set(command.category, client.categories.get(command.category) + ", " + name);
 	} else client.categories.set(command.category, name);
 }
 
@@ -69,10 +69,7 @@ client.on("message", async message => {
 		let curr = new Date();
 		let diff = Math.ceil((curr-init)/1000);
 		message.channel.send(negative(message.author)
-			.addFields(
-				{ name: ":clock: Time left on cooldown", value: `${cd-diff + 1} second(s)` },
-				{ name: `:name_badge: Total cooldown on ${cmd[0].toUpperCase() + cmd.slice(1)}`, value: `${cd} seconds` }
-			)
+			.addField(`:clock: Cooldown on ${cmd[0].toUpperCase() + cmd.slice(1)}`, `**Remaining**: ${cd-diff + 1} seconds\n**Total**: ${cd} seconds`)
         );
 		return;
 	} else {

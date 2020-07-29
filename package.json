@@ -1,7 +1,7 @@
 {
   "name": "mana",
   "version": "1.0.0",
-  "description": "A minimal bot with game commands around a simple currency system.",
+  "description": "An MMORPG based chat bot on discord.",
   "main": "index.js",
   "scripts": {
     "test": "node index.js"

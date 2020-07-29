@@ -43,15 +43,25 @@ module.exports.execute = async (message, args) => {
     if (rarity == "Rare") req.magicule = 2400;
     if (rarity == "Legendary") req.magicule = 4200;
 
-    // Getting user and validating the requirements
+    // Getting user
     const user = await User.findOne({ id: message.author.id });
+
+    // Checking if user already have a pet
+    if (user.pet) {
+        message.channel.send(negative(message.author)
+            .addField(":name_badge: Unable to tame", "You already have a pet.")
+        );
+        return;
+    }
+
+    // Validating magicule and fragment requirements
     const count = user.fragments.get(frag._id.toString()) || 0;
     if (user.magicule < req.magicule || count < req.fragment) {
         message.channel.send(negative(message.author)
             .addFields(
-                { name: ":name_badge: Unable to tame", value: "You don't have enough resources."},
-                { name: ":notepad_spiral: Requirements", value: `${req.magicule} magicules and ${req.fragment} ${fragname}s.` },
-                { name: ":person_frowning_tone1: Your resources", value: `${user.magicule} magicules and ${count} ${fragname}s.` }
+                { name: ":name_badge: Unable to tame", value: "You don't have enough resources." },
+                { name: ":gem: Magicules", value: `**Required**: ${req.magicule}\n**Current**: ${user.magicule}` },
+                { name: `:game_die: ${fragname}`, value: `**Required**: ${req.fragment}\n**Current**: ${count}` }
             )
         );
         return;
@@ -69,9 +79,9 @@ module.exports.execute = async (message, args) => {
     // Building message
     const embed = positive(message.author)
         .addFields(
-            { name: `:star2: Tamed ${pet.name}`, value: `**Type**: ${pet.type}\n**Rarity**: ${pet.rarity}`},
-            { name: ":gem: Magicules consumed", value: `${req.magicule} magicules` },
-            { name: ":game_die: Fragments consumed", value: `${req.fragment} ${fragname}s`}
+            { name: `:star2: Tamed ${pet.name}`, value: `**Type**: ${pet.type}\n**Rarity**: ${pet.rarity}` },
+            { name: ":gem: Magicules", value: `**Consumed**: ${req.magicule}\n**Total**: ${user.magicule}` },
+            { name: `:game_die: ${fragname}`, value: `**Consumed**: ${req.fragment}\n**Current**: ${count-req.fragment}` }
         );
 
     // Handling buffs

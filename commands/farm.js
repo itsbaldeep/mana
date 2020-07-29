@@ -20,10 +20,10 @@ module.exports.execute = async message => {
     const mana = Math.floor(user.mana.limit * min / 50);
     if (user.mana.current < mana) {
         message.channel.send(negative(message.author)
-        .addFields(
-            { name: ":name_badge: Unable to farm", value: `You need ${mana} mana points.`},
-            { name: ":drop_of_blood: Replenish mana", value: "Meditate or drink potions."}
-        )
+            .addFields(
+                { name: ":name_badge: Unable to farm", value: `**Required**: ${mana} mana\n**Current**: ${user.mana.current}/${user.mana.limit}`},
+                { name: ":drop_of_blood: Replenish mana", value: "Meditate or drink potions."}
+            )
         );
         return;
     }

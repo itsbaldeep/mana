@@ -32,25 +32,27 @@ module.exports.execute = async message => {
     // Validating requirements
     if (user.magicule < req) {
         message.channel.send(negative(message.author)
-            .addField(":name_badge: Unable to refine", `You need ${req} magicules to refine a ${pet.rarity} pet.`)
+            .addField(":name_badge: Unable to refine", `**Required**: ${req} magicules\n**Current**: ${user.magicule} magicules`)
         );
         return;
     }
 
-    // Getting buffs
+    // Getting current buffs
     const current = [];
     for (const entry of user.buffs.entries())
         current.push(`${entry[0]} -> ${entry[1]}`);
 
+    // Taking magicules
+    user.magicule -= req;
+
     // Building message
     const embed = positive(message.author)
         .addFields(
-            { name: `:gem: ${pet.name} refined successfully`, value: `${req} magicules consumed` },
+            { name: `:gem: ${pet.name} refined`, value: `**Consumed**: ${req} magicules\n**Current**: ${user.magicule} magicules` },
             { name: ":white_sun_cloud: Previous buffs", value: current.join("\n") }
         );
     
-    // Taking magicules and getting new buffs
-    user.magicule -= req;
+    // Applying new buffs
     await buffs(user.buffs, pet.abilities, embed);
 
     // Updating user and sending message

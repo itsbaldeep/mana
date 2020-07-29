@@ -21,7 +21,7 @@ module.exports.execute = async message => {
     if (user.mana.current < mana) {
         message.channel.send(negative(message.author)
             .addFields(
-                { name: `:mag: Trial level ${user.trials}`, value: `You need atleast ${mana} mana points.`},
+                { name: `:mag: Trial level ${user.trials}`, value: `**Required**: ${mana} mana\n**Current**: ${user.mana.current}/${user.mana.limit}`},
                 { name: ":drop_of_blood: Replenish mana", value: "Meditate or drink potions."}
             )
         );

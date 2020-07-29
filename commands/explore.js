@@ -21,7 +21,7 @@ module.exports.execute = async message => {
     if (user.mana.current < mana) {
         message.channel.send(negative(message.author)
             .addFields(
-                { name: `:mag: Combat level ${user.level}`, value: `You need atleast ${mana} mana points.`},
+                { name: `:mag: Combat level ${user.level}`, value: `**Required**: ${mana} mana\n**Current**: ${user.mana.current}/${user.mana.limit}`},
                 { name: ":drop_of_blood: Replenish mana", value: "Meditate or drink potions."}
             )
         );
@@ -29,7 +29,7 @@ module.exports.execute = async message => {
     }
 
     // Handling experience gained
-    const perc = curve(user.level);
+    const perc = 3 * curve(user.level);
     const exp = Math.floor(user.experience.limit * perc / 100);
 
     // Building a message

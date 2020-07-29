@@ -20,11 +20,23 @@ module.exports.execute = async message => {
         return;
     }
 
-    // Removing pet
+    // Getting pet and corresponding worth
     const pet = await Pet.findOne({ _id: user.pet });
-    await User.updateOne({ id: message.author.id }, { $set: { pet: null }});
+    const rarity = pet.rarity;
+    let magicule = 0;
+    if (rarity == "Common") magicule = 400;
+    if (rarity == "Uncommon") magicule = 600;
+    if (rarity == "Rare") magicule = 1200;
+    if (rarity == "Legendary") magicule = 2100;
+
+    // Giving magicules and taking away pet
+    user.pet = null;
+    user.magicule += magicule;
+
+    // Updating user and sending message
+    await User.updateOne({ id: message.author.id }, { $set: user });
     message.channel.send(positive(message.author)
-        .addField(`:dash: Disowned pet successfully`, `You no longer own ${pet.name}.`)
+        .addField(`:dash: Disowned ${pet.name}`, `**Gained**: ${magicule} magicules\n**Total**: ${user.magicule} magicules`)
     );
     return 1;
 };
