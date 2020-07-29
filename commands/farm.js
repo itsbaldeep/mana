@@ -6,10 +6,10 @@ const handle = require("../functions/handle");
 const get = require("../functions/get");
 const add = require("../functions/add");
 
-module.exports.cooldown = 12;
-module.exports.description = "Farming allows you to farm magicules, a chance to get a potion and/or a fragment, it gives experience and also takes mana depending on how many monsters you encounter.";
+module.exports.cooldown = 8;
+module.exports.description = "Go farming to get experience and items.\n**Takes**: Mana\n**Gives**: Experience, Potion and/or Fragment";
 module.exports.usage = `${prefix}farm`;
-module.exports.aliases = [];
+module.exports.aliases = ["fr"];
 module.exports.category = "Combat";
 
 module.exports.execute = async message => {

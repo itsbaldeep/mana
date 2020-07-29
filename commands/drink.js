@@ -5,9 +5,9 @@ const { negative, positive } = require("../functions/embed");
 const remove = require("../functions/remove");
 
 module.exports.cooldown = 8;
-module.exports.description = "Use this command to drink potions that are in your inventory.";
+module.exports.description = "Drink one potion from your inventory.\n**Takes**: Potion\n**Gives**: Mana";
 module.exports.usage = `${prefix}drink <potion name>`;
-module.exports.aliases = [];
+module.exports.aliases = ["dr"];
 module.exports.category = "Combat";
 
 module.exports.execute = async (message, args) => {

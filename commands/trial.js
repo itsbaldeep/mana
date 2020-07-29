@@ -4,12 +4,11 @@ const Fragment = require("../models/Fragment");
 const { prefix } = require("../config.json");
 const { negative, positive } = require("../functions/embed");
 const add = require("../functions/add");
-const handle = require("../functions/handle.js");
 
 module.exports.cooldown = 2;
-module.exports.description = "Trials are level-based tests of your power, they take a large amounts of mana directly related to the trial level and give better better reward each time as well as potions and fragments.";
+module.exports.description = "Get rewards based on each level of trial.\n**Takes**: Mana\n**Gives**: Potions, Fragments and Magicules";
 module.exports.usage = `${prefix}trial`;
-module.exports.aliases = [];
+module.exports.aliases = ["tr"];
 module.exports.category = "Combat";
 
 module.exports.execute = async message => {

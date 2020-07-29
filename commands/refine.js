@@ -4,8 +4,8 @@ const Pet = require("../models/Pet");
 const { negative, positive } = require("../functions/embed");
 const buffs = require("../functions/buffs");
 
-module.exports.cooldown = 12;
-module.exports.description = "You can refine your pet by spending some amount of magicules and it will shuffle the buffs and randomize the proc rates which can make your pet better or worse based on luck.";
+module.exports.cooldown = 6;
+module.exports.description = "Refine your pet and shuffle abilities and proc rate depending on the rarity.\n**Takes**: Magicules\n**Gives**: New Buffs";
 module.exports.usage = `${prefix}refine`;
 module.exports.aliases = [];
 module.exports.category = "Pet";

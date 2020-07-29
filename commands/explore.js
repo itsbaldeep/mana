@@ -7,9 +7,9 @@ const get = require("../functions/get");
 const add = require("../functions/add");
 
 module.exports.cooldown = 12;
-module.exports.description = "By exploring, you are guaranteed to get either a potion or a fragment, it also gives experience and takes fixed mana every level.";
+module.exports.description = "Explore for items in your surroundings based on your combat level.\n**Takes**: Mana\n**Gives**: Experience, Potion and/or Fragment";
 module.exports.usage = `${prefix}explore`;
-module.exports.aliases = [];
+module.exports.aliases = ["ex"];
 module.exports.category = "Combat";
 
 module.exports.execute = async message => {
@@ -17,7 +17,7 @@ module.exports.execute = async message => {
     const user = await User.findOne({ id: message.author.id });
 
     // Handling mana cost and validating
-    const mana = Math.floor(user.mana.limit * 20 / 100);
+    const mana = Math.floor(user.mana.limit * 15 / 100);
     if (user.mana.current < mana) {
         message.channel.send(negative(message.author)
             .addFields(

@@ -5,8 +5,8 @@ const { negative, positive } = require("../functions/embed");
 const remove = require("../functions/remove");
 
 module.exports.cooldown = 4;
-module.exports.description = "Using this command, you can convert your current fragments into magicules.";
-module.exports.usage = `${prefix}defuse <fragment name>`;
+module.exports.description = "Defuse your fragments into magicules.\n**Takes**: Fragments\n**Gives**: Magicules";
+module.exports.usage = `${prefix}defuse <fragment name> <quantity?>`;
 module.exports.aliases = [];
 module.exports.category = "Craft";
 

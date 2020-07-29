@@ -3,7 +3,7 @@ const { prefix } = require("../config.json");
 const { negative, positive } = require("../functions/embed");
 
 module.exports.cooldown = 16;
-module.exports.description = "Meditating allows you to replenish a large amount of your mana.";
+module.exports.description = "Replenishes your mana based on your trial level.\n**Gives**: Mana";
 module.exports.usage = `${prefix}meditate`;
 module.exports.aliases = ["med"];
 module.exports.category = "Combat";

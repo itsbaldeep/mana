@@ -5,9 +5,9 @@ const { negative, positive } = require("../functions/embed");
 const remove = require("../functions/remove");
 const add = require("../functions/add");
 
-module.exports.cooldown = 8;
-module.exports.description = "Using this command, you can craft higher level potions from your lower level potions.";
-module.exports.usage = `${prefix}brew <potion name>`;
+module.exports.cooldown = 4;
+module.exports.description = "Brew higher level potions by spoiling lower ones.\n**Takes**: Potions\n**Gives**: Potions";
+module.exports.usage = `${prefix}brew <potion name> <quantity?>`;
 module.exports.aliases = [];
 module.exports.category = "Craft";
 

@@ -7,7 +7,7 @@ const remove = require("../functions/remove");
 const buffs = require("../functions/buffs");
 
 module.exports.cooldown = 4;
-module.exports.description = "Given enough magicules and fragments, you can use this command to tame a random pet of the respective rarity that you wish to get.";
+module.exports.description = "Tame a new random pet based on the rarity.\n**Takes**: Fragments and Magicules\n**Gives**: Pet";
 module.exports.usage = `${prefix}tame <rarity>`;
 module.exports.aliases = [];
 module.exports.category = "Pet";

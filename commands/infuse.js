@@ -5,9 +5,9 @@ const { negative, positive } = require("../functions/embed");
 const remove = require("../functions/remove");
 const add = require("../functions/add");
 
-module.exports.cooldown = 8;
-module.exports.description = "Infusing allows you to craft a higher level fragment by using lower level fragment.";
-module.exports.usage = `${prefix}infuse <fragment name>`;
+module.exports.cooldown = 4;
+module.exports.description = "Infuse higher level fragments by defusing lower ones.\n**Takes**: Fragments\n**Gives**: Fragments";
+module.exports.usage = `${prefix}infuse <fragment name> <quantity?>`;
 module.exports.aliases = [];
 module.exports.category = "Craft";
 

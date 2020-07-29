@@ -5,8 +5,8 @@ const { negative, positive } = require("../functions/embed");
 const remove = require("../functions/remove");
 
 module.exports.cooldown = 4;
-module.exports.description = "You can break your current potion into magicules by using this command.";
-module.exports.usage = `${prefix}spoil <potion name>`;
+module.exports.description = "Spoil your potions into magicules.\n**Takes**: Potions\n**Gives**: Magicules";
+module.exports.usage = `${prefix}spoil <potion name> <quantity?>`;
 module.exports.aliases = [];
 module.exports.category = "Craft";
 

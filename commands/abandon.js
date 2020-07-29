@@ -4,7 +4,7 @@ const Pet = require("../models/Pet");
 const { positive, negative } = require("../functions/embed");
 
 module.exports.cooldown = 4;
-module.exports.description = "You can abandon your current pet and convert it into magicules by using this command and passing the pet's name.";
+module.exports.description = "Abandon your pet and get magicules depending on pet's rarity.\n**Takes**: Your Pet\n**Gives**: Magicules";
 module.exports.usage = `${prefix}abandon`;
 module.exports.aliases = [];
 module.exports.category = "Pet";

@@ -4,9 +4,9 @@ const User = require("../models/User");
 const Pet = require("../models/Pet");
 
 module.exports.cooldown = 2;
-module.exports.description = "Shows the basic details of the user including level, trial level, pet name, magicule count, current experience level and mana level.";
+module.exports.description = "Shows experience, mana, levels and magicules of the user.";
 module.exports.usage = `${prefix}profile (@user)`;
-module.exports.aliases = [];
+module.exports.aliases = ["p"];
 module.exports.category = "Utility";
 
 module.exports.execute = async (message, args) => {

@@ -3,11 +3,11 @@ const { positive, negative } = require("../functions/embed");
 const User = require("../models/User");
 const Pet = require("../models/Pet");
 
-module.exports.cooldown = 6;
-module.exports.description = "Shows details about your pet which includes all the active abilities and their proc rates.";
+module.exports.cooldown = 2;
+module.exports.description = "Shows details about your pet and current buffs.";
 module.exports.usage = `${prefix}pet (@user)`;
 module.exports.aliases = [];
-module.exports.category = "Pet";
+module.exports.category = "Utility";
 
 module.exports.execute = async message => {
     // Handling arguments

@@ -5,7 +5,7 @@ const { prefix } = require("../config.json");
 const { positive, negative } = require("../functions/embed");
 
 module.exports.cooldown = 2;
-module.exports.description = "It shows total amount of user's potions, fragments and magicules.";
+module.exports.description = "Shows magicules, potions and fragments of the user.";
 module.exports.usage = `${prefix}inventory (@user)`;
 module.exports.aliases = ["inv"];
 module.exports.category = "Utility";

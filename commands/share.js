@@ -1,8 +1,8 @@
 const { prefix } = require("../config.json");
 
 module.exports.cooldown = 8;
-module.exports.description = "You can share magicules, potions and fragments with your friends by using this command. Be careful of the syntax though.";
-module.exports.usage = `${prefix} (@user) <quantity> <item name>`;
+module.exports.description = "Share items with your other users.\n**Takes**: From giver\n**Gives**: To taker";
+module.exports.usage = `${prefix}share (@user) <item name> <quantity?>`;
 module.exports.aliases = [];
 module.exports.category = "Utility";
 
