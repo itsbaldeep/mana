@@ -34,7 +34,7 @@ module.exports.execute = async (message, args) => {
     // Validating argument
     if (!req.name) {
         message.channel.send(negative(message.author)
-            .addField(":name_badge: Unable to infuse", "Please pass a valid infusable potion name.");
+            .addField(":name_badge: Unable to infuse", "Please pass a valid infusable potion name.")
         );
         return;
     }
