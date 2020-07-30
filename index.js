@@ -19,17 +19,19 @@ client.categories = new Discord.Collection();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-	const name = file.slice(0, -3);
+    const command = require(`./commands/${file}`);
+    const name = file.slice(0, -3);
 
-	client.commands.set(name, command);
-	command.aliases.forEach(alias => {
-		client.aliases.set(alias, name);
-	})
-	client.cooldowns.set(name, new Map());
-	if (client.categories.has(command.category)) {
-		client.categories.set(command.category, client.categories.get(command.category) + ", " + name);
+    client.commands.set(name, command);
+    command.aliases.forEach(alias => {
+        client.aliases.set(alias, name);
+    });
+    client.cooldowns.set(name, new Map());
+    if (command.category) {
+        if (client.categories.has(command.category)) {
+            client.categories.set(command.category, client.categories.get(command.category) + ", " + name);
 	} else client.categories.set(command.category, name);
+    }
 }
 
 // Connecting to Database
