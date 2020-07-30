@@ -2,7 +2,6 @@ const { positive } = require("../functions/embed");
 
 module.exports.cooldown = 2;
 module.exports.aliases = [];
-module.exports.category = "Info";
 
 module.exports.execute = (message, args, client) => {
     const cmd = args.shift();
