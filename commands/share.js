@@ -122,7 +122,7 @@ module.exports.execute = async (message, args) => {
     await User.updateOne({ id: mention.id }, { $set: taker });
     await User.updateOne({ id: message.author.id }, { $set: giver });
     message.channel.send(positive(message.author)
-        .addField(`Shared successfully`, `**Given**: ${name} x${quantity}\n**To**: ${mention.username}`)
+        .addField(`:shopping_bags: Shared successfully`, `**Given**: ${item} x${quantity}\n**To**: ${mention.username}`)
     );
     return 1;
 }
