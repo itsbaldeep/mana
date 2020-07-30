@@ -14,7 +14,7 @@ module.exports.aliases = [];
 
 module.exports.execute = async (message, args) => {
     const mention = message.mentions.users.first();
-
+    
     // Validating if a user is mentioned
     if (!mention) {
         message.channel.send(negative(message.author)
@@ -40,7 +40,8 @@ module.exports.execute = async (message, args) => {
     }
     
     // Validating argument
-    const arg = args.shift().shift();
+    args.shift();
+    const arg = args.shift();
     if (!arg) {
         message.channel.send(negative(message.author)
             .addField(":name_badge: No arguments found", "Please pass an item name.")
