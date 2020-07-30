@@ -35,7 +35,6 @@ module.exports.execute = async (message, args) => {
     if (!req.name) {
         message.channel.send(negative(message.author)
             .addField(":name_badge: Unable to brew", "Please pass a valid brewable potion name.")
-            .setFooter("Note: You can not brew Impure Potion.")
         );
         return;
     }
