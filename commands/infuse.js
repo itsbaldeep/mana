@@ -29,7 +29,7 @@ module.exports.execute = async (message, args) => {
     const req = { name: "", quantity: quantity };
     if (name == "Uncommon Fragment") { req.name = "Common Fragment"; req.quantity *= 2;}
     if (name == "Rare Fragment") { req.name = "Uncommon Fragment"; req.quantity *= 4;}
-    if (name == "Legendary Fragment") { req.name = "Rare Fragment"; req.quantity *= 8;}
+    if (name == "Legendary Fragment") { req.name = "Rare Fragment"; req.quantity *= 6;}
     
     // Validating argument
     if (!req.name) {
