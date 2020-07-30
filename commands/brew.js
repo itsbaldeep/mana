@@ -45,7 +45,7 @@ module.exports.execute = async (message, args) => {
     const user = await User.findOne({ id: message.author.id });
     if (!user.potions.has(pot._id.toString()) || user.potions.get(pot._id.toString()) < req.quantity) {
         message.channel.send(negative(message.author)
-            .addField(":name_badge: Unable to brew", `You need atleast ${req.quantity} ${req.name}s to brew ${quantity} ${name}(s).`)
+            .addField(":name_badge: Unable to brew", `You need atleast ${req.quantity} ${req.name} to brew ${quantity} ${name}.`)
         );
         return;
     }
@@ -58,7 +58,7 @@ module.exports.execute = async (message, args) => {
     // Updating user and sending message
     await User.updateOne({ id: message.author.id }, { $set: user });
     message.channel.send(positive(message.author)
-        .addField(":beer: Brewed succesfully", `**Brewed**: ${quantity} ${brewed.name}(s)\n**Spoiled**: ${req.quantity} ${req.name}`)
+        .addField(":beer: Brewed succesfully", `**Brewed**: ${quantity} ${brewed.name}\n**Spoiled**: ${req.quantity} ${req.name}`)
     );
     return 1;
 
