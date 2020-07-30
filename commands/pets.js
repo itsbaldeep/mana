@@ -17,32 +17,29 @@ module.exports.execute = async message => {
 
     const pets = [common, uncommon, rare, legendary];
 
-    // Emotes of all rarity
-    const emotes = {
-        common: ":sparkles:",
-        uncommon: ":star:",
-        rare: ":star2:",
-        legendary: ":stars:"
+    // Details of all rarity
+    const details = {
+        common: { emote: ":sparkles:", cost: 800 },
+        uncommon: { emote: ":star:", cost: 1200 },
+        rare: { emote: ":star2:", cost: 2400 },
+        legendary: { emote: ":stars:", cost: 4200 }
     };
 
     // Building message
     const embed = positive(message.author);
     for (const set of pets) {
-        // Getting emote and rarity
-        let emote;
+        // Getting info
+        let info;
         let rarity = set[0].rarity;
-        if (rarity == "Common") emote = emotes.common;
-        if (rarity == "Uncommon") emote = emotes.uncommon;
-        if (rarity == "Rare") emote = emotes.rare;
-        if (rarity == "Legendary") emote = emotes.legendary;
+        if (rarity == "Common") info = details.common;
+        if (rarity == "Uncommon") info = details.uncommon;
+        if (rarity == "Rare") info = details.rare;
+        if (rarity == "Legendary") info = details.legendary;
 
-        // Getting pet details
-        let details = [];
-        for (const pet of set) {
-            details.push(`${pet.name} (${pet.type})`);
-        }
+        // Getting pet names
+        const names = set.map(pet => pet.name);
 
-        embed.addField(`${emote} ${rarity}`, `**Buffs**: ${set[0].abilities}\n${details.join("\n")}`);
+        embed.addField(`${info.emote} ${rarity}`, `**Buffs**: ${set[0].abilities}\n**Cost**: ${info.cost} magicules\n**Pets**: ${names.join(", ")}`);
     }
 
     // Sending message
