@@ -26,10 +26,10 @@ module.exports.execute = async (message, args) => {
     const quantity = parseInt(args.pop()) || 1;
     
     // Getting the requirements
-    const req = { name: "", quantity: 2 * quantity };
-    if (name == "Holy Potion") req.name = "Impure Potion";
-    if (name == "Pure Potion") req.name = "Holy Potion";
-    if (name == "Divine Potion") req.name = "Pure Potion";
+    const req = { name: "", quantity: quantity };
+    if (name == "Holy Potion") { req.name = "Impure Potion"; req.quantity *= 2;}
+    if (name == "Pure Potion") { req.name = "Holy Potion"; req.quantity *= 3;}
+    if (name == "Divine Potion") { req.name = "Pure Potion"; req.quantity *= 4;}
     
     // Validating argument
     if (!req.name) {
