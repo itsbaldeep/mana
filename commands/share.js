@@ -33,7 +33,7 @@ module.exports.execute = async (message, args) => {
     
    // Checking if mentioned user is a bkt
    if (mention.bot) {
-        message.channel.send(negative(author)
+        message.channel.send(negative(message.author)
             .addField(":name_badge: Unable to share items", "Bots doesn't have a profile.")
         );
         return;
