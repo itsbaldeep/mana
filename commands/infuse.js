@@ -34,8 +34,7 @@ module.exports.execute = async (message, args) => {
     // Validating argument
     if (!req.name) {
         message.channel.send(negative(message.author)
-            .addField(":name_badge: Unable to infuse", "Please pass a valid infusable fragment name.")
-            .setFooter("Note: You can not infuse Common Fragment.")
+            .addField(":name_badge: Unable to infuse", "Please pass a valid infusable potion name.");
         );
         return;
     }
@@ -45,7 +44,7 @@ module.exports.execute = async (message, args) => {
     const user = await User.findOne({ id: message.author.id });
     if (!user.fragments.has(frag._id.toString()) || user.fragments.get(frag._id.toString()) < req.quantity) {
         message.channel.send(negative(message.author)
-            .addField(":name_badge: Unable to infuse", `You need atleast ${req.quantity} ${req.name}s to infuse ${quantity} ${name}(s).`)
+            .addField(":name_badge: Unable to infuse", `You need atleast ${req.quantity} ${req.name} to infuse ${quantity} ${name}.`)
         );
         return;
     }
@@ -58,7 +57,7 @@ module.exports.execute = async (message, args) => {
     // Updating user and sending message
     await User.updateOne({ id: message.author.id }, { $set: user });
     message.channel.send(positive(message.author)
-        .addField(":game_die: Infused succesfully", `**Infused**: ${quantity} ${infused.name}(s)\n**Defused**: ${req.quantity} ${req.name}(s)`)
+        .addField(":game_die: Infused succesfully", `**Infused**: ${quantity} ${infused.name}\n**Defused**: ${req.quantity} ${req.name}`)
     );
     return 1;
 
