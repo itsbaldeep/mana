@@ -12,15 +12,15 @@ module.exports = (user, exp, mana, embed) => {
         reduction = Math.floor(mana * user.buffs.get("Nature's Grace") / 100);
     }
 
-    // Taking mana
-    user.mana.current -= mana - reduction;
-
     // Checking Mana Reversion
     let revert = false;
     if (reversion) {
         revert = Math.random() < user.buffs.get("Mana Reversion") / 100;
-        if (revert) mana = 0;
+        if (revert) { mana = 0; reduction = 0; }
     }
+
+    // Taking mana
+    user.mana.current -= mana - reduction;
 
     // Checking for Morning Dew
     let recover = false;
