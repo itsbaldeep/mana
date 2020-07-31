@@ -9,7 +9,7 @@ const add = require("../functions/add");
 module.exports.cooldown = 8;
 module.exports.description = "Go farming to get experience and items.\n**Takes**: Mana\n**Gives**: Experience, Potion and/or Fragment";
 module.exports.usage = `${prefix}farm`;
-module.exports.aliases = ["fr"];
+module.exports.aliases = [];
 module.exports.category = "Combat";
 
 module.exports.execute = async message => {

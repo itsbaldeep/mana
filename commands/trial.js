@@ -8,7 +8,7 @@ const add = require("../functions/add");
 module.exports.cooldown = 2;
 module.exports.description = "Get rewards based on each level of trial.\n**Takes**: Mana\n**Gives**: Potions, Fragments and Magicules";
 module.exports.usage = `${prefix}trial`;
-module.exports.aliases = ["tr"];
+module.exports.aliases = [];
 module.exports.category = "Combat";
 
 module.exports.execute = async message => {

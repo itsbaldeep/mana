@@ -9,7 +9,7 @@ const add = require("../functions/add");
 module.exports.cooldown = 12;
 module.exports.description = "Explore for items in your surroundings based on your combat level.\n**Takes**: Mana\n**Gives**: Experience, Potion and/or Fragment";
 module.exports.usage = `${prefix}explore`;
-module.exports.aliases = ["ex"];
+module.exports.aliases = [];
 module.exports.category = "Combat";
 
 module.exports.execute = async message => {

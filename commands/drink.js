@@ -7,7 +7,7 @@ const remove = require("../functions/remove");
 module.exports.cooldown = 8;
 module.exports.description = "Drink one potion from your inventory.\n**Takes**: Potion\n**Gives**: Mana";
 module.exports.usage = `${prefix}drink <potion name>`;
-module.exports.aliases = ["dr"];
+module.exports.aliases = [];
 module.exports.category = "Combat";
 
 module.exports.execute = async (message, args) => {
