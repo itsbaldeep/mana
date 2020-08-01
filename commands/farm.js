@@ -43,7 +43,7 @@ module.exports.execute = async message => {
     const items = [];
 
     // Giving magicules to user
-    const magicules = Math.round(Math.random() * 30) + 10;
+    const magicules = Math.round(Math.random() * 60) + 20;
     user.magicule += magicules;
     embed.addField(":gem: Magicules", `**Found**: ${magicules}\n**Total**: ${user.magicule}`);
 

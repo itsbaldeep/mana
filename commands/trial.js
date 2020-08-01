@@ -28,7 +28,7 @@ module.exports.execute = async message => {
     }
 
     // Giving magicules
-    const magicule = 50 + user.trials * 5;
+    const magicule = 100 + user.trials * 5;
     user.magicule += magicule;
 
     // Taking mana

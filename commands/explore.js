@@ -50,6 +50,11 @@ module.exports.execute = async message => {
         add(1, pot._id, user.potions);
         embed.addField(":wine_glass: Potion found", pot.name);
     }
+
+    // Giving magicules to user
+    const magicules = user.level * 10;
+    user.magicule += magicules;
+    embed.addField(":gem: Magicules", `**Found**: ${magicules}\n**Total**: ${user.magicule}`);
     
     // Updating user and sending message
     await User.updateOne({ id: message.author.id }, { $set: user });
