@@ -52,7 +52,7 @@ module.exports.execute = async message => {
     }
 
     // Giving magicules to user
-    const magicules = user.level * 10;
+    const magicules = user.level * 5;
     user.magicule += magicules;
     embed.addField(":gem: Magicules", `**Found**: ${magicules}\n**Total**: ${user.magicule}`);
     
