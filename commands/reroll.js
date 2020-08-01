@@ -48,7 +48,7 @@ module.exports.execute = async message => {
     // Building message
     const embed = positive(message.author)
         .addFields(
-            { name: `:gem: ${pet.name} rerolled`, value: `**Consumed**: ${req} magicules\n**Current**: ${user.magicule} magicules` },
+            { name: `:gem: ${pet.name} rerolled`, value: `**Magicules Consumed**: ${req} magicules\n**Current Magicules**: ${user.magicule} magicules` },
             { name: ":white_sun_cloud: Previous buffs", value: current.join("\n") }
         );
     
