@@ -5,8 +5,8 @@ const { negative, positive } = require("../functions/embed");
 const buffs = require("../functions/buffs");
 
 module.exports.cooldown = 6;
-module.exports.description = "Refine your pet and shuffle abilities and proc rate depending on the rarity.\n**Takes**: Magicules\n**Gives**: New Buffs";
-module.exports.usage = `${prefix}refine`;
+module.exports.description = "Reroll your pet and shuffle abilities and proc rate depending on the rarity.\n**Takes**: Magicules\n**Gives**: New Buffs";
+module.exports.usage = `${prefix}reroll`;
 module.exports.aliases = [];
 module.exports.category = "Pet";
 
@@ -16,7 +16,7 @@ module.exports.execute = async message => {
     // Checking if user doesn't have a pet
     if (!user.pet) {
         message.channel.send(negative(message.author)
-            .addField(":name_badge: Unable to refine", "You don't even have a pet to begin with.")
+            .addField(":name_badge: Unable to reroll", "You don't even have a pet to begin with.")
         );
         return;
     }
@@ -32,7 +32,7 @@ module.exports.execute = async message => {
     // Validating requirements
     if (user.magicule < req) {
         message.channel.send(negative(message.author)
-            .addField(":name_badge: Unable to refine", `**Required**: ${req} magicules\n**Current**: ${user.magicule} magicules`)
+            .addField(":name_badge: Unable to reroll", `**Required**: ${req} magicules\n**Current**: ${user.magicule} magicules`)
         );
         return;
     }
@@ -48,7 +48,7 @@ module.exports.execute = async message => {
     // Building message
     const embed = positive(message.author)
         .addFields(
-            { name: `:gem: ${pet.name} refined`, value: `**Consumed**: ${req} magicules\n**Current**: ${user.magicule} magicules` },
+            { name: `:gem: ${pet.name} rerolled`, value: `**Consumed**: ${req} magicules\n**Current**: ${user.magicule} magicules` },
             { name: ":white_sun_cloud: Previous buffs", value: current.join("\n") }
         );
     
