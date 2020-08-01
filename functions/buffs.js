@@ -22,7 +22,7 @@ module.exports = async (buffs, abilities, embed) => {
         const pick = all[random];
     
         // Getting a random proc rate and updating user record
-        const proc = Math.floor(Math.random() * (pick.range.max - pick.range.min + 1)) + pick.range.min;
+        const proc = Math.floor(Math.random() * ((pick.range.max / 2) - pick.range.min + 1)) + pick.range.min;
         buffs.set(pick.name, proc);
     }
     
