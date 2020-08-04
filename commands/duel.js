@@ -64,11 +64,21 @@ module.exports.execute = async message => {
     }
 
     // Checking mana
-    const mana = Math.floor(attacker.mana.limit * 15 / 100);
-    if (attacker.mana.current < mana) {
+    let req = Math.floor(attacker.mana.limit * 15 / 100)
+    if (attacker.mana.current < req) {
         message.channel.send(negative(message.author)
             .addFields(
-                { name: ":name_badge: Unable to duel", value: `**Required**: ${mana} mana\n**Current**: ${user.mana.current}/${user.mana.limit}`},
+                { name: ":name_badge: Unable to duel", value: `**Required**: ${req} mana\n**Current**: ${attacker.mana.current}/${attacker.mana.limit}`},
+                { name: ":drop_of_blood: Replenish mana", value: "Meditate or drink potions."}
+            )
+        );
+        return;
+    }
+    req = Math.floor(defender.mana.limit * 15 / 100);
+    if (defender.mana.current < req) {
+        message.channel.send(negative(message.author)
+            .addFields(
+                { name: ":name_badge: Unable to duel", value: `${mention.username} don't have enough mana\n**Required**: ${req} mana\n**Current**: ${defender.mana.current}/${defender.mana.limit}`},
                 { name: ":drop_of_blood: Replenish mana", value: "Meditate or drink potions."}
             )
         );
@@ -137,6 +147,7 @@ module.exports.execute = async message => {
         // Calculating experience
         const perc = 3 * curve(winner.profile.level);
         const exp = Math.floor(winner.profile.experience.limit * perc / 100);
+        const mana = Math.floor(winner.profile.mana.limit * 15 / 100);
         handle(winner.profile, exp, mana, embed);
         
         // Giving frag
