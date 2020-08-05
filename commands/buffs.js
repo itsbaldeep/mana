@@ -17,22 +17,22 @@ module.exports.execute = async message => {
         dew: {
             emote: ":sunrise:",
             info: "Chance to recover 100% of mana.",
-            proc: "5-15%"
+            proc: "5-35%"
         },
         reversion: {
             emote: ":timer:",
             info: "Chance to take no mana at all.",
-            proc: "5-15%"
+            proc: "5-35%"
         },
         grace: {
             emote: ":four_leaf_clover:",
             info: "Reduces overall mana taken.",
-            proc: "5-25%"
+            proc: "5-50%"
         },
         lucky: {
             emote: ":sparkler:",
             info: "Increases overall experience gained.",
-            proc: "5-25%"
+            proc: "5-50%"
         }
     };
 

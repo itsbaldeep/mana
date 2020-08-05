@@ -24,10 +24,10 @@ module.exports.execute = async message => {
     // Getting requirements
     const pet = await Pet.findOne({ _id: user.pet });
     let req = 0;
-    if (pet.rarity == "Common") req = 50;
-    if (pet.rarity == "Uncommon") req = 150;
-    if (pet.rarity == "Rare") req = 300;
-    if (pet.rarity == "Legendary") req = 600;
+    if (pet.rarity == "Common") req = 500;
+    if (pet.rarity == "Uncommon") req = 1500;
+    if (pet.rarity == "Rare") req = 3000;
+    if (pet.rarity == "Legendary") req = 6000;
 
     // Validating requirements
     if (user.magicule < req) {

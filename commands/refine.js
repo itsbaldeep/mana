@@ -28,10 +28,10 @@ module.exports.execute = async message => {
     const name = pet.rarity + " Fragment";
     const frag = await Fragment.findOne({ name: name });
     let req = 0;
-    if (pet.rarity == "Common") req = 25;
-    if (pet.rarity == "Uncommon") req = 75;
-    if (pet.rarity == "Rare") req = 150;
-    if (pet.rarity == "Legendary") req = 300;
+    if (pet.rarity == "Common") req = 250;
+    if (pet.rarity == "Uncommon") req = 750;
+    if (pet.rarity == "Rare") req = 1500;
+    if (pet.rarity == "Legendary") req = 3000;
 
     // Validating requirements
     if (user.magicule < req || !user.fragments.has(frag._id.toString())) {
