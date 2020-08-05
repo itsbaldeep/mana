@@ -1,10 +1,12 @@
 const { prefix } = require("../config.json");
 const User = require("../models/User");
 const Pet = require("../models/Pet");
+const Fragment = require("../models/Fragment");
 const { positive, negative } = require("../functions/embed");
+const add = require("../functions/add");
 
 module.exports.cooldown = 4;
-module.exports.description = "Abandon your pet and get magicules depending on pet's rarity.\n**Takes**: Your Pet\n**Gives**: Magicules";
+module.exports.description = "Abandon your pet and get fragments of your pet's rarity.\n**Takes**: Your Pet\n**Gives**: Fragments";
 module.exports.usage = `${prefix}abandon`;
 module.exports.aliases = [];
 module.exports.category = "Pet";
@@ -20,23 +22,19 @@ module.exports.execute = async message => {
         return;
     }
 
-    // Getting pet and corresponding worth
+    // Getting pet and corresponding fragment
     const pet = await Pet.findOne({ _id: user.pet });
-    const rarity = pet.rarity;
-    let magicule = 0;
-    if (rarity == "Common") magicule = 400;
-    if (rarity == "Uncommon") magicule = 600;
-    if (rarity == "Rare") magicule = 1200;
-    if (rarity == "Legendary") magicule = 2100;
-
-    // Giving magicules and taking away pet
+    const frag = await Fragment.findOne({ _id: pet.fragment });
+    
+    // Giving fragments and taking away pet
     user.pet = null;
-    user.magicule += magicule;
+    add(5, frag._id, user.fragments);
+    user.buffs.clear();
 
     // Updating user and sending message
     await User.updateOne({ id: message.author.id }, { $set: user });
     message.channel.send(positive(message.author)
-        .addField(`:dash: Disowned ${pet.name}`, `**Gained**: ${magicule} magicules\n**Total**: ${user.magicule} magicules`)
+        .addField(`:dash: Disowned ${pet.name}`, `**Gained**: 5 ${frag.name}\n**Total**: ${user.fragments.get(frag._id.toString())} ${frag.name}`)
     );
     return 1;
 };
