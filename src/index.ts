@@ -20,7 +20,7 @@ async function main() {
     const commands = files.filter((file) => file.endsWith(".js"));
 
     for (const file of commands) {
-      const command: Command = await import(`@commands/${file}`);
+      const command: Command = await import(`@commands/${file}`).command;
       const name = file.slice(0, file.indexOf(".js"));
 
       bot.commands.set(name, command);

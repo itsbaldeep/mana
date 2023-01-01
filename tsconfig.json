@@ -24,7 +24,8 @@
       "@commands/*": ["./src/commands/*", "./build/commands/*"],
       "@config/*": ["./src/config/*", "./build/config/*"],
       "@functions/*": ["./src/functions/*", "./build/config/*"],
-      "@models/*": ["./src/models/*", "./build/models/*"]
+      "@models/*": ["./src/models/*", "./build/models/*"],
+      "@types/*": ["./src/types/*", "./build/types/*"]
     }
   },
   "include": ["**/*.ts"],

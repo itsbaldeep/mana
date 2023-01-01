@@ -1,6 +1,6 @@
-const Buff = require("../models/Buff");
+import { Buff } from "@models/Buff";
 
-module.exports = async (buffs, abilities, embed) => {
+export const handleBuffs = async (buffs, abilities, embed) => {
     // Removing current buffs from user
     buffs.clear();
 
