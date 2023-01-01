@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2016",
+    "module": "CommonJS",
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "allowJs": false,
+    "rootDir": "./src",
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@commands/*": ["./src/commands/*", "./build/commands/*"],
+      "@config/*": ["./src/config/*", "./build/config/*"],
+      "@functions/*": ["./src/functions/*", "./build/config/*"],
+      "@models/*": ["./src/models/*", "./build/models/*"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
+}
