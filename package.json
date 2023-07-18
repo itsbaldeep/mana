@@ -18,6 +18,6 @@
   "homepage": "https://github.com/itsbaldeep/mana#readme",
   "dependencies": {
     "discord.js": "^12.2.0",
-    "mongoose": "^5.13.15"
+    "mongoose": "^5.13.20"
   }
 }
